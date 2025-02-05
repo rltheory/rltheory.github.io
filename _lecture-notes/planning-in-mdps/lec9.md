@@ -140,7 +140,7 @@ for any $i\in[k]$,
 
 $$
 \begin{align}
-\max_{i\in [k]} \inf_{\theta\in \mathbb{R}^d} \|\Phi \theta - e_i \|_\infty \le \tau\,,
+\inf_{\theta\in \mathbb{R}^d} \|\Phi \theta - e_i \|_\infty \le \tau\,,
 \label{eq:featjl}
 \end{align}
 $$

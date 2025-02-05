@@ -345,6 +345,6 @@ The UCBVI paper. Notice that they consider the homogeneous setting, which is dif
 
 Azar, M. G., Osband, I., & Munos, R. (2017, July). Minimax regret bounds for reinforcement learning. In International Conference on Machine Learning (pp. 263-272). PMLR. [[link]](https://arxiv.org/abs/1703.05449)
 
-The paper that presents the lower bound. Notice the they consider the infinite horizon average reward setting. Thus, there results contains a diameter term $D$ instead of a horizon term of $H$.
+The paper that presents the lower bound. Notice the they consider the infinite horizon average reward setting. Thus, their results contains a diameter term $D$ instead of a horizon term of $H$.
 
 Auer, P., Jaksch, T., & Ortner, R. (2008). Near-optimal regret bounds for reinforcement learning. Advances in neural information processing systems, 21. [[link]](https://www.jmlr.org/papers/volume11/jaksch10a/jaksch10a.pdf)

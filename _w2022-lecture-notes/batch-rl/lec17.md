@@ -480,4 +480,4 @@ For a review of the literature of around 2012, consult the following paper:
 
 * S. Lange, T. Gabel, M. Riedmiller (2012) Batch Reinforcement Learning. In: M.
 Wiering, M. van Otterlo (eds) Reinforcement Learning. Adaptation, Learning, and
-Optimization, vol 12. Springer, Berlin, Heidelberg [pdf](http://tgabel.de/cms/fileadmin/user_upload/documents/Lange_Gabel_EtAl_RL-Book-12.pdf)
+Optimization, vol 12. Springer, Berlin, Heidelberg [pdf](http://tgabel.de/cms/fileadmin/user_upload/documents/Lange_Gabel_EtAl_RL-Book-12.pdf) [link2](https://web.archive.org/web/20200610215738/http://tgabel.de/cms/fileadmin/user_upload/documents/Lange_Gabel_EtAl_RL-Book-12.pdf) [link3](http://machine-learning-lab.com/_media/publications/langegabelriedmiller2011chapter.pdf)
