@@ -1,0 +1,368 @@
+\documentclass{article}
+\newcommand{\hwnumber}{1}
+
+\newcommand{\norm}[1]{\| #1 \|}
+\newcommand{\abs}[1]{| #1 |}
+
+\usepackage{fullpage,amsthm,amsmath,amssymb}
+\usepackage{algorithm,algorithmic}
+\usepackage{mathtools}
+\usepackage{bbm,bm}
+\usepackage{enumerate}
+\usepackage{xspace}
+\usepackage[textsize=tiny,
+]{todonotes}
+\newcommand{\todot}[1]{\todo[color=blue!20!white]{T: #1}}
+\newcommand{\todoc}[1]{\todo[color=orange!20!white]{Cs: #1}}
+\newcommand{\todoj}[1]{\todo[color=red!20!white]{J: #1}}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue,linkcolor=black]{hyperref}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+
+\usepackage{comment}
+
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator*{\Exp}{\mathbf{E}}
+\DeclareMathOperator*{\1}{\mathbbm{1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\V}{\mathbb V}
+\renewcommand{\P}[1]{P\left\{ #1 \right\}}
+\newcommand{\Prob}[1]{\mathbb{P}( #1 )}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\b}[1]{\mathbf{#1}}
+\newcommand{\EE}[1]{\E[#1]}
+\newcommand{\bfone}{\1}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\cF}{\mathcal{F}}
+\usepackage[capitalize]{cleveref}
+\usepackage{xifthen}
+
+\newcounter{DocPoints} 
+\newcounter{QuestionPoints} 
+\newcommand{\points}[1]{	\par\mbox{}\par\noindent\hfill {\bf #1 points}	\addtocounter{DocPoints}{#1}
+	\addtocounter{QuestionPoints}{#1}
+}
+\newcommand{\tpoints}[1]{        	\ifthenelse{\isempty{#1}}	{	}	{		\addtocounter{DocPoints}{#1}
+		\addtocounter{QuestionPoints}{#1}
+	}													 	\par\mbox{}\par\noindent\hfill {Total: \bf \arabic{QuestionPoints}\xspace points}\par\mbox{}\par\hrule\hrule
+	\setcounter{QuestionPoints}{0}
+}
+\newcommand{\tpoint}[1]{
+	\tpoints{#1}
+}
+
+\theoremstyle{definition}
+\newtheorem{question}{Question}
+\newtheorem{assumption}{Assumption}
+\newtheorem*{assumption*}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem*{remark*}{Remark}
+\newtheorem{solution}{Solution}
+\newtheorem*{solution*}{Solution}
+
+\excludecomment{solution}
+
+\newcommand{\hint}{\noindent \textbf{Hint}:\xspace}
+
+\usepackage{hyperref}
+
+\newcommand{\epssub}{\delta}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\sA}{\mathcal{A}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{CMPUT 605: Theoretical Foundations of Reinforcement Learning, Winter 2023\\ Midterm}}
+\end{center}
+
+\section*{Instructions}
+\noindent \textbf{Submissions}
+You need to submit a single PDF file, named {\tt midterm\_<name>.pdf} where {\tt <name>} is your name.
+The PDF file should include your typed up solutions (we strongly encourage to use pdf\LaTeX). 
+Write your name in the title of your PDF file.
+We provide a \LaTeX template that you are encouraged to use.
+To submit your PDF file you should send the PDF file via private message to Vlad Tkachuk on Slack before the deadline.
+
+\noindent \textbf{Collaboration and sources}
+Work on your own. No consultation, etc.
+Students are expected to understand and explain all the steps of their proofs.
+
+\noindent \textbf{Scheduling}
+Start early: It takes time to solve the problems, as well as to write down the solutions. Most problems should have a short solution (and you can refer to results we have learned about to shorten your solution). Don't repeat calculations that we did in the class unnecessarily.
+
+\vspace{0.3cm}
+
+\noindent \textbf{Deadline:} February 26 at 11:55 pm
+
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\nS}{\mathrm{S}}
+\newcommand{\nA}{\mathrm{A}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ip}[1]{\langle #1 \rangle}
+
+\section*{Undiscounted infinite horizon problems}
+
+
+Let $M = (\cS,\cA,P,r)$ be a finite MDP as usual, but this time consider the infinite horizon undiscounted total reward criterion. In this setting, the value of policy $\pi$ (memoryless or not) is
+\begin{align*}
+v^\pi(s) = \E^{\pi}_s\left[ \sum_{t=0}^\infty r_{A_t}(S_t) \right]\,.
+\end{align*}
+To guarantee that this value exist we make the following assumption on the MDP $M$:
+
+\newcommand{\term}{s^{\star}}
+\begin{assumption}[All policies proper]\label{ass:app}
+Assume that the MDP $M$ has a state $\term$ such that the following hold:
+\begin{enumerate}
+\item For all actions $a\in \cA$, $P_a(\term,\term)=1$ (and thus, $P_a(\term,s')=0$ for any $s'\ne \term$ state of the MDP);
+\item For all actions $a\in \cA$, $r_a(\term)=0$;
+\item The rewards are all nonnegative;
+\item For any policy $\pi$ of the MDP (memoryless or not), 
+and for any $s\in \cS$,
+$\sum_{t\ge 0}\PP^{\pi}_s(S_t \ne \term)<\infty$.
+\end{enumerate}
+\end{assumption}
+{\color{red} In this section we assume that \cref{ass:app} holds even if this is not explicitly mentioned.}
+
+\noindent \textbf{Note}: You may find it useful to resuse results from previous assignments and the lecture notes.
+If you believe a solution to any of the questions below is very similar to a previous assignment solution or proof in the lecture notes, you do not need to rewrite the entire solution. 
+It is sufficient to indicate only what would need to be changed for the solution to hold in the setting defined above (i.e. under \cref*{ass:app}).
+When referring to an assignment solution, please refer to the solution PDF shared with you after the assignment deadline (named assignmentX\_soln.pdf where X is the assignment number), not your personal solutions to the assignments.
+
+\newcommand{\eR}{\bar \R}
+\newcommand{\BB}{\mathbb{B}}
+\newcommand{\one}[1]{\mathbb{I}\{#1\}}
+\begin{question}
+\label{q:ex}
+Show that  the value of any policy $\pi$ can indeed be ``well-defined'' in the following sense:
+Let
+$(\Omega,\cF)$ be the measurable space that holds the random variables $(S_t,A_t)_{t\ge 0}$.
+\begin{enumerate}
+\item If we take $R=\sum_{t=0}^\infty r_{A_t}(S_t)$, this is well-defined as an \emph{extended real random variable} from the measurable space $(\Omega,\cF)$ to $(\eR,\BB(\eR))$ where $\eR = \R\cup\{-\infty,+\infty\}$ is the set of \emph{extended reals} 
+and $\BB(\eR)$ is the ``natural'' Borel $\sigma$-algebra over $\eR$ 
+defined using $\BB(\eR) =\sigma( \{[-\infty,x]\,:\, x\in \eR \})$ (i.e., the smallest $\sigma$-algebra generated by the set system in the argument of $\sigma$).
+\points{5}
+\item For any policy $\pi$ and state $s\in \cS$, 
+under $\PP_s^\pi$,
+the expectation of $R$ exists and is finite.
+\points{20}
+\end{enumerate}
+\hint For Part 1, recall the closure properties of the collection of extended real random variables (e.r.r.v.). 
+Start your argument with showing that $r_{A_t}(S_t)$ is a random variable and build up things from there.
+For Part 2, recall that the expected value of a nonnegative e.r.r.v is equal to the limit of expected values assigned to simple functions below it provided that the limit of these simple functions converges to the e.r.r.v. 
+For Part 2, see Prop 2.3.2 and for Part 1 see Prop 2.1.5 in (for example)
+this book
+\href{https://www.dropbox.com/s/3gi7k35j3jgcftp/2006_Book_MeasureTheoryAndProbabilityThe.pdf}{here}.\footnote{
+Krishna B. Athreya and Soumendra N. Lahiri. Measure Theory and Probability Theory. Springer, 2006.}
+\tpoints{}
+\end{question}
+
+
+The last part of the previous problem allows us to define the value of $\pi$ in state $s$ using the usual formula
+\begin{align*}
+v^\pi(s) = \E_s^\pi[ R ]
+\end{align*}
+and note that regardless of $\pi$ and $s$, these values are always finite.
+
+For a memoryless policy $\pi$ and $s,s'\ne \term$, 
+define $P_{\pi}(s,s') = \sum_{a\in \cA} \pi(a|s) P_a(s,s')$, i.e., the usual way.
+We can also view $P_{\pi}$, as usual, an $(\nS-1)\times (\nS-1)$ matrix by identifying $\cS$ with $\{1,\dots,\nS\}$, $\term=\nS$.
+
+\begin{question}[Transition matrices]
+Show that for any $s,s'\in \cS$, $s,s'\ne \term$, and $t\ge 1$, $(P_\pi^t)_{s,s'} = \PP_s^\pi(S_t=s')$.
+\tpoints{10}
+\end{question}
+
+
+\begin{question}
+Prove that for any memoryless policy $\pi$, defining $r_\pi(s) = \sum_a \pi(a|s)r_a(s)$, as usual,
+we have
+$v^\pi = \sum_{t\ge 0} P_\pi^t r_\pi$, where when viewed as vectors, $v^\pi$ and $r_\pi$ are restricted to $s\ne \term$ (i.e., they are $(\nS-1)$-dimensional).
+
+\hint You may want to reuse the result of the previous exercise.
+\tpoints{10}
+\end{question}
+
+
+\begin{question}[Policy evaluation fixed-point equation]
+\label{q:pefp}
+Show that for $s\ne \term$, $v^\pi$ satisfies
+\begin{align*}
+v^\pi(s) = r_\pi(s) + \sum_{s'\ne \term} P_\pi(s,s') v^\pi(s')\,.
+\end{align*}
+\tpoints{2}
+\end{question}
+
+
+Define now the $w(s)$ as the total expected reward incurred under $\pi$ when it is started from $s$ and \emph{in each time step the reward incurred is one} until $\term$ is reached (that is, $r_a(s)$ is replaced by $1$ for $s\ne \term$, while the zero rewards are kept at $\term$).
+By our previous result, $w$ is well-defined.
+Furthermore,
+\begin{align*}
+w(s)\ge 1\,, \qquad s\ne \term
+\end{align*}
+since for $s\ne \term$, in the zeroth period, a reward of one is incurred and in all subsequent periods the rewards incurred are nonnegative.
+
+Introduce now the weighted norm, $\norm{\cdot}_w$: For $x\in \R^{\nS-1}$,
+\begin{align*}
+\norm{x}_w = \max_{s\in [\nS-1]} \frac{|x_s|}{w(s)}\,.
+\end{align*}
+
+When the dependence on $\pi$ is important, we will use $w_\pi$.
+
+\begin{question}[Contractions]
+\label{q:contr}
+Show that $P_\pi$ is a contraction under $\norm{\cdot}_w$, that is,
+there exists $0\le \rho <1$ such that
+for any $x,y\in \R^{\nS-1}$,
+\begin{align*}
+\norm{P_\pi x- P_\pi y}_w \le \rho \norm{x-y}_w\,.
+\end{align*}
+\tpoints{15}
+\end{question}
+
+
+We can define occupancy measures as before: For $s\ne \term$, policy $\pi$ and initial state distribution $\mu$ defined over $\term\not\in \cS':= \{1,\dots,\nS-1\}$,
+\begin{align*}
+\nu_\mu^\pi(s, a) = \sum_{t=0}^\infty  \mathbb{P}_\mu^\pi (S_t = s, A_t = a).
+\end{align*}
+Clearly, this is well-defined under our standing assumption (by Question~\ref{q:ex}).
+Noting that rewards from $\term$ are all zero, we have
+\begin{align*}
+v^\pi(\mu) = \ip{\nu_\mu^\pi,r}\,.
+\end{align*}
+
+
+\begin{question}
+\label{q:occ}
+Show that for any policy $\pi$ and distribution $\mu \in \cM_1(\cS')$ there is a memoryless policy $\pi'$ such that $\nu_\mu^\pi = \nu_\mu^{\pi'}$.
+\tpoints{10}
+\end{question}
+
+
+
+Define $v^*(s) = \sup_{\pi} v^\pi(s)$ and define 
+$T: \R^{\nS-1} \to \R^{\nS-1}$ by
+$(T v)(s) = \max_a r_a(s) + \ip{P_a(s),v}$, $s\ne \term$.
+For a memoryless policy, we also let $T_\pi v = r_\pi + P_\pi v$ (using vector notation).
+Greediness is defined as usual: $\pi$ is greedy w.r.t. $v\in \R^{\nS-1}$, if $T_\pi v = T v$.
+
+\begin{question}[The Fundamental Theorem for Undiscounted Infinite-Horizon MDPs]
+Show that  the fundamental theorem still holds:
+\begin{enumerate}
+\item The optimal value function $v^*$ is well-defined (i.e., finite);
+\points{20}
+\item Any policy  that is greedy with respect to $v^*$  is optimal: $v^\pi = v^*$;
+\item It holds that $v^* = Tv^*$.
+\points{10}
+\end{enumerate}
+\tpoints{}
+\end{question}
+
+
+
+\begin{question}
+\label{q:nonneg}
+Imagine that \cref{ass:app} is changed such that all immediate rewards are nonpositive  (at $\term$ the rewards are still zero).
+What do you need to change in your answer to the previous questions? Just give a short summary of the changes.
+\tpoints{3}
+\end{question}
+
+
+
+
+\begin{question}
+Imagine that \cref{ass:app} is changed such that there is no sign restriction on the rewards, they can be positive, or negative. 
+Something will go wrong with the claims made in Question \ref{q:ex}. Explain what.
+\tpoints{3}
+\end{question}
+
+
+
+\section*{Approximate Policy Iteration}
+
+
+
+
+\begin{question}
+Prove the Theorem(Approximate Policy Iteration) from lecture notes 8.
+Assume that the rewards lie in the $[0,1]$ interval.
+Let $(\pi_k)_{k \ge 0}$, $(\varepsilon_k)_k$ be such that
+$$T v^{\pi_k} = T_{\pi_{k+1}} v^{\pi_k} + \varepsilon_k$$
+holds for all $k \ge 0$
+Then, for any $k\ge 1$,
+\begin{align*}
+\norm{ v^* - v^{\pi_k} }_\infty 
+& \le 
+\frac{\gamma^k}{1-\gamma}  + 
+\frac{1}{(1-\gamma)^2} \max_{0 \le s \le k-1} \norm{\varepsilon_s}_\infty.
+\end{align*}
+
+\noindent \textbf{Hint:} You should make use of Lemma(Geometric progress lemma with approximate policy improvement) from lecture notes 8. 
+
+
+\tpoints{10}
+\end{question}
+
+
+
+
+
+
+\section*{Policy Gradients and Stationary Points }
+
+\begin{question} In this question, we will show that there are no suboptimal stationary points in policy search, as long as there are no suboptimal stationary points on the corresponding policy improvement objective. For each $\theta \in \R^d$, we let $\pi_\theta : \cS \rightarrow \cM_1(\cA)$ be a memoryless policy and $\Pi = \{\pi_\theta: \theta \in \R^d\}$ the set of parametrized policies. As usual, $\pi^*$ denotes the optimal policy, i.e. $v^{\pi^*} = v^*$. Note that we do not assume explicitly that $\pi^* \in \Pi$. For an initial state distribution $\mu \in \cM_1(\cS)$, the return is
+\begin{align}
+	J(\pi) = \mu^\top v^\pi
+\end{align}
+We assume that $\theta \mapsto J(\pi_\theta)$ is differentiable. Recall that $\theta_0 \in \R^d$ is a stationary point of $J(\pi_\theta)$ if
+\begin{align}
+\frac{d}{dx} J(\pi_x)|_{x = \theta_0}	= \mathbf{0} \in \R^d\,.
+\end{align}
+Let $\theta_0 \in \R^d$ and assume that the following conditions hold:
+\begin{enumerate}[i)]
+	\item The policy gradient theorem holds, i.e. for all $\theta \in \R^d$, $\frac{d}{dx} J(\pi_x)|_{x=\theta} = \tilde{\nu}^{\pi_\theta}_\mu \frac{d}{dx} M_{\pi_x} q^{\pi_\theta} |_{x=\theta}$, where  $\tilde{\nu}^{\pi_\theta}_\mu$ is the discounted state occupancy measure for policy $\pi_{\theta}$ and initial state distribution $\mu$.
+	\item The policy class is closed under policy iteration, i.e. for all $\theta \in \R^d$, $\max_{\pi \in \Pi} \tilde\nu_\mu^{\pi_\theta} M_\pi q^{\pi_\theta} = \max_{\pi \in \text{ML}} \tilde\nu_\mu^{\pi_\theta} M_\pi q^{\pi_\theta}$, where $\text{ML}$ is the set of memoryless policies.
+	\item For each $\theta \in \R^d$, the map $x \mapsto \tilde \nu_\mu^{\pi_\theta} M_{\pi_x} q^{\pi_\theta}$ has no suboptimal stationary points.
+	\item The occupancy measure of $\pi^*$ is absolutely continuous w.r.t. the occupancy measure of $\pi_{\theta_0}$: $\tilde \nu_\mu^{\pi^*} \ll \tilde \nu_\mu^{\pi_{\theta_0}}$ (the definition of absolutely continuous is that $\tilde \nu_\mu^{\pi_{\theta_0}}(s) = 0 \implies \nu_\mu^{\pi^*}(s) = 0$).
+\end{enumerate}
+In the following, we show that $\theta_0$ is a stationary point of $J(\pi_\theta)$ if and only if  $J(\pi_\theta) = J(\pi^*)$.
+
+
+\begin{enumerate}	
+	\item  Show that $J(\pi_{\theta_0}) = J(\pi^*)$ implies that $\theta_0$ is a stationary point.
+	\points{5}
+
+
+
+
+\item For the other direction, assume that $\theta_0$ is a stationary point of $J(\pi_\theta)$. Use assumptions i)-iii) to show that $\tilde \nu_\mu^{\pi_{\theta_0}} v^{\pi_{\theta_0}} = \tilde \nu_\mu^{\pi_{\theta_0}} T v^{\pi_{\theta_0}}$ (i.e. $\theta_0$ satisfies an ``average'' Bellman optimality equation). 
+	Conclude the proof using the performance difference lemma and assumption iv). 
+\points{25}
+
+
+\end{enumerate}
+\tpoints{}
+\end{question}
+
+
+\bigskip
+\bigskip
+
+\noindent
+\textbf{
+	\noindent
+	Total for all questions: \arabic{DocPoints}}.
+Of this, $28$ are bonus marks (i.e., $120$ marks worth $100\%$ on this problem set).
+
+\end{document}
+

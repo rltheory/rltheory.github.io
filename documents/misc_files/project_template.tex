@@ -1,0 +1,72 @@
+%% if some package prevents compilation, remove it
+
+\documentclass[a4paper, 11pt]{article}
+\usepackage{fullpage}
+\usepackage{titling}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{IEEEtrantools} 
+\usepackage{bbm}
+\usepackage{lineno}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{makecell}
+\usepackage{lipsum}
+\usepackage{etoolbox} %% <- for \pretocmd and \apptocmd
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\setlength{\droptitle}{-6em}   % This is your set screw, for shifting up the title
+\renewcommand{\baselinestretch}{1.1}
+\setlength{\parskip}{0.5em}
+
+\author{Author
+  \\ 7th April 2020}
+\date{}
+\title{Big Blank Title for the Project \vspace{-0.5cm}}
+
+\makeatletter %% <- make @ usable in macro names
+\newcommand*\linenomathpatch{\@ifstar{\linenomathpatch@AMS}{\linenomathpatch@}}
+\newcommand*\linenomathpatch@[1]{
+  \expandafter\pretocmd\csname #1\endcsname {\linenomathWithnumbers}{}{}
+  \expandafter\pretocmd\csname #1*\endcsname{\linenomathWithnumbers}{}{}
+  \expandafter\apptocmd\csname end#1\endcsname {\endlinenomath}{}{}
+  \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}
+}
+\newcommand*\linenomathpatch@AMS[1]{
+  \expandafter\pretocmd\csname #1\endcsname {\linenomathWithnumbersAMS}{}{}
+  \expandafter\pretocmd\csname #1*\endcsname{\linenomathWithnumbersAMS}{}{}
+  \expandafter\apptocmd\csname end#1\endcsname {\endlinenomath}{}{}
+  \expandafter\apptocmd\csname end#1*\endcsname{\endlinenomath}{}{}
+}
+\let\linenomathWithnumbersAMS\linenomathWithnumbers
+\patchcmd\linenomathWithnumbersAMS{\advance\postdisplaypenalty\linenopenalty}{}{}{}
+\makeatother %% revert @
+\linenomathpatch{IEEEeqnarray}
+\linenomathpatch{equation}
+\linenomathpatch*{gather}
+\linenomathpatch*{multline}
+\linenomathpatch*{align}
+\linenomathpatch*{alignat}
+\linenomathpatch*{flalign}
+
+\begin{document}
+\maketitle
+\vspace{-2cm}
+\linenumbers
+
+\section{Introduction}
+\lipsum[75]
+\lipsum[5]
+
+\subsection{Subsection} \label{sec: subsection}
+\lipsum[66]
+
+\section{Title}
+\lipsum[5]
+
+\end{document}

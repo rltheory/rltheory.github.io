@@ -1,0 +1,75 @@
+// To center images
+.center {
+    text-align: center;
+}
+
+// https://www.w3schools.com/howto/howto_css_style_hr.asp
+hr {
+    border-top: 4px solid #990066;
+}
+
+// Misc ideas for handling theorems (none work perfectly)
+
+// https://forum.squarespace.com/topic/59756-how-do-i-add-a-border-around-text-box/
+.boxBorder {
+    border: 2px solid #990066;
+    padding: 10px;
+    outline: #990066 solid 5px;
+    outline-offset: 5px;
+}
+
+// http://drz.ac/2013/01/17/latex-theorem-like-environments-for-the-web/
+.theorem {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+
+.theorem:before {
+    content: "Theorem.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+
+.lemma:before {
+    content: "Lemma.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+
+.proof:before {
+    content: "Proof.";
+    font-style: italic;
+}
+
+.proof:after {
+    content: "\25FC";
+    float:right;
+}
+
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+
+.definition:before {
+    content: "Definition.";
+    font-weight: bold;
+    font-style: normal;
+}
+
+// maybe try this when have time
+// https://www.scss.tcd.ie/~mclear/blog/?post=extmarkdown

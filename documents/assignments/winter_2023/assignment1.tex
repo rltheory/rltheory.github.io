@@ -1,0 +1,335 @@
+\documentclass{article}
+\newcommand{\hwnumber}{1}
+
+\newcommand{\norm}[1]{\| #1 \|}
+\newcommand{\abs}[1]{| #1 |}
+
+\usepackage{fullpage,amsthm,amsmath,amssymb}
+\usepackage{algorithm,algorithmic}
+\usepackage{mathtools}
+\usepackage{bbm,bm}
+\usepackage{enumerate}
+\usepackage{xspace}
+\usepackage[textsize=tiny,
+]{todonotes}
+\newcommand{\todot}[1]{\todo[color=blue!20!white]{T: #1}}
+\newcommand{\todoc}[1]{\todo[color=orange!20!white]{Cs: #1}}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue,linkcolor=black]{hyperref}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator*{\Exp}{\mathbf{E}}
+\DeclareMathOperator*{\1}{\mathbbm{1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\V}{\mathbb V}
+\renewcommand{\P}[1]{P\left\{ #1 \right\}}
+\newcommand{\Prob}[1]{\mathbb{P}( #1 )}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\b}[1]{\mathbf{#1}}
+\newcommand{\EE}[1]{\E[#1]}
+\newcommand{\bfone}{\1}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\cF}{\mathcal{F}}
+\usepackage[capitalize]{cleveref}
+\usepackage{xifthen}
+
+\newcounter{DocPoints} 
+\newcounter{QuestionPoints} 
+\newcommand{\points}[1]{	\par\mbox{}\par\noindent\hfill {\bf #1 points}	\addtocounter{DocPoints}{#1}
+	\addtocounter{QuestionPoints}{#1}
+}
+\newcommand{\tpoints}[1]{        	\ifthenelse{\isempty{#1}}	{	}	{		\addtocounter{DocPoints}{#1}
+		\addtocounter{QuestionPoints}{#1}
+	}													 	\par\mbox{}\par\noindent\hfill {Total: \bf \arabic{QuestionPoints}\xspace points}\par\mbox{}\par\hrule\hrule
+	\setcounter{QuestionPoints}{0}
+}
+\newcommand{\tpoint}[1]{
+	\tpoints{#1}
+}
+
+\theoremstyle{definition}
+\newtheorem{question}{Question}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem*{remark*}{Remark}
+\newtheorem{solution}{Solution}
+\newtheorem*{solution*}{Solution}
+
+\newcommand{\hint}{\noindent \textbf{Hint}:\xspace}
+
+\usepackage{hyperref}
+
+\newcommand{\epssub}{\delta}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\sA}{\mathcal{A}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{CMPUT 605: Theoretical Foundations of Reinforcement Learning, Winter 2023\\ Homework \#\hwnumber}}
+\end{center}
+
+\section*{Instructions}
+\textbf{Submissions}
+You need to submit a single PDF file, named {\tt p0\hwnumber\_<name>.pdf} where {\tt <name>} is your name.
+The PDF file should include your typed up solutions (we strongly encourage to use pdf\LaTeX). 
+Write your name in the title of your PDF file.
+We provide a \LaTeX template that you are encouraged to use.
+To submit your PDF file you should send the PDF file via private message to Vlad Tkachuk on Slack before the deadline.
+
+\textbf{Collaboration and sources}
+Work on your own. You can consult the problems with your classmates, use books
+or web, papers, etc.
+Also, the write-up must be your own and you must acknowledge all the
+sources (names of people you worked with, books, webpages etc., including class notes.) 
+Failure to do so will be considered cheating.  
+Identical or similar write-ups will be considered cheating as well.
+Students are expected to understand and explain all the steps of their proofs.
+
+\textbf{Scheduling}
+Start early: It takes time to solve the problems, as well as to write down the solutions. Most problems should have a short solution (and you can refer to results we have learned about to shorten your solution). Don't repeat calculations that we did in the class unnecessarily.
+
+\vspace{0.3cm}
+
+\textbf{Deadline:} January 29 at 11:55 pm
+
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\nS}{\mathrm{S}}
+\newcommand{\nA}{\mathrm{A}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ip}[1]{\langle #1 \rangle}
+
+\section*{Problems}
+Unless otherwise stated, for the problem described below all policies, value functions, etc. are for
+a discounted, finite MDP $\cM=(\cS,\cA,P,r,\gamma)$. That is, $\cS$ and $\cA$ are finite, $0\le \gamma<1$.
+Also, without the loss of generality, $\cS = [\nS]=\{1,\dots,\nS\}$ and $\cA = [\nA]=\{1,\dots,\nA\}$.
+Below we use notation introduced in the lecture without redefining it, e.g., $\PP_\mu^\pi$, $\E_\mu^\pi$, $v^\pi$, $v^*$, $T_\pi$, $T$, etc. All these objects are to be understood in the context of the fixed $\cM$.
+
+\begin{question}
+Show that for any policy $\pi$ (not necessarily memoryless) and distribution $\mu\in \cM_1(\cS)$ over the states,
+ $v^\pi(\mu) = \sum_{s\in \cS} \mu(s) v^{\pi}(s)$.
+ 
+\hint Read the end-notes to Lecture 2. Use the canonical probability space for MDPs and the cylinder sets to show that $\PP_\mu = \sum_{s\in \cS} \mu(s) \PP_s$.
+\tpoints{10}
+\end{question}
+
+
+\begin{question}
+Recall that for a memoryless policy $\pi$, $P_\pi$ 
+is the $\nS \times \nS$ matrix whose $(s,s')$th entry is 
+\[
+\sum_{a\in \cA} \pi(a|s) P_a(s,s')\,.
+\] 
+Show that for any $s,s'\in \cS$ and $t\ge 1$, $(P_\pi^t)_{s,s'} = \PP_s^\pi(S_t=s')$.
+
+\hint Use the properties of $\PP_s$ (the tower rule of conditional expectations may be useful, too, especially if you do not want to write a lot).
+\tpoints{10}
+\end{question}
+
+
+\begin{question}
+Prove that for any memoryless policy $\pi$, 
+$v^\pi = \sum_{t\ge 0} \gamma^t P_\pi^t r_\pi$.
+
+\hint You may want to reuse the result of the previous exercise.
+\tpoints{10}
+\end{question}
+
+
+\begin{question}
+Prove that for any memoryless policy $\pi$, $v^\pi$ is the fixed point of $T_\pi$: $v^\pi = T_\pi v^\pi$.
+\tpoints{5}
+\end{question}
+
+
+\begin{question}
+Let $w\in (0,\infty)^\nS$ be an $\nS$-dimensional vector whose entries are all positive.
+Let $\tilde{v}^*$ be a solution to the optimization problem
+\begin{align}
+\label{eq:badlp}
+\max_{v\in \RR^\nS} w^\top v \qquad \text{s.t.} \qquad v \le T v\,.
+\end{align}
+Show that $\tilde{v}^*=v^*$. That is, the unique solution to the problem stated in \eqref{eq:badlp} is $v^*$. 
+\tpoints{5}
+\end{question}
+
+
+
+\begin{question}\label{ex:lp}
+Let $w\in (0,\infty)^\nS$ be an $\nS$-dimensional vector whose entries are all positive.
+Let $\tilde{v}^*$ be a solution to the optimization problem
+\begin{align}
+\label{eq:prelp}
+\MoveEqLeft
+\min_{v\in \RR^\nS} w^\top v \qquad \text{s.t.} \qquad v \ge T v\,.
+\end{align}
+Show that $\tilde{v}^*=v^*$. That is, the unique solution to the problem stated in \eqref{eq:prelp} is $v^*$.
+\tpoints{5}
+\end{question}
+
+
+
+\begin{question}
+A linear program is a constrained optimization problem with a linear objective and linear constraints.
+Which of \eqref{eq:badlp} or \eqref{eq:prelp} is equivalent to a linear program? Give the linear program and show the equivalence.
+\tpoints{5}
+\end{question}
+
+
+
+
+\begin{question}
+Show that for any policy $\pi$ and distribution $\mu \in \cM_1(\cS)$ there is a memoryless policy $\pi'$ such that $\nu_\mu^\pi = \nu_\mu^{\pi'}$ (i.e., memoryless policies exhaust the set of all discounted state-action occupancy measures).
+\hint For arbitrary $\pi,\mu$, let $\tilde \nu_\mu^\pi(s) = \sum_{a\in \cA} \nu_\mu^\pi(s,a)$.
+Define $\pi'(a|s) = \nu_\mu^\pi(s,a)/\tilde \nu_\mu^\pi(s)$ when the denominator is nonzero, and otherwise let $\pi'(\cdot|s)$ be an arbitrary distribution. Show that
+$\tilde \nu_\mu^\pi = \mu + \gamma \tilde \nu_\mu^\pi P_{\pi'}$ (treating $\tilde \nu_\mu^\pi$ and $\mu$ as row-vectors) to conclude that 
+$\tilde \nu_\mu^\pi = \tilde \nu_\mu^{\pi'}$. To conclude, use the definition of $\pi'$ and that for memoryless policies $\pi''$, $\tilde \nu_\mu^{\pi''}(s) \pi''(a|s) = \nu_\mu^{\pi''}(s,a)$.
+\tpoints{15}
+\end{question}
+
+
+
+For the next questions, define the operators
+\begin{align*}
+P:\RR^\cS \to \RR^{\cS \times\cA}\,, \quad
+M:\RR^{\cS \times \cA} \to \RR^{\cS}\,, \quad
+M_\pi:\RR^{\cS \times \cA} \to \RR^{\cS}
+\end{align*}
+via
+\begin{align*}
+(P v)(s,a) = \ip{P_a(s),v}\,, \qquad 
+(M q)(s) = \max_{a\in \cA} q(s,a)\,, \qquad 
+(M_\pi q)(s) = \sum_{a\in \cA} \pi(a|s)q(s,a)\,,
+\end{align*}
+where $(s,a)\in \cS \times \cA$, $v\in \RR^{\cS}$, $q\in \RR^{\cS\times \cA}$
+and $\pi$ is an arbitrary memoryless policy.
+Further,
+let $r\in \RR^{\cS\times \cA}$ be defined by $r(s,a) = r_a(s)$, $(s,a)\in \cS \times \cA$.
+It is easy to see that for any $v\in \RR^{\cS}$ the following hold:
+\begin{align}
+T v & = M(r+\gamma P v)\,, \label{eq:tdec} \\
+T_\pi v &= M_\pi (r+\gamma P v)\,. \label{eq:tpidec} 
+\end{align}
+
+\par\hrule
+
+\begin{question}
+Let $\pi$ be a memoryless policy. Show that $T_\pi$ is a $\gamma$-contraction with respect to the max-norm.
+\tpoints{5}
+\end{question}
+
+
+
+\begin{question}
+Show that $M,M_\pi$ and $P$ as defined above are non-expansion when there domains and ranges are equipped with the maximum norm.
+That is, show that for all $q,q'\in \R^{\cS \times \cA}$ and $v,v'\in \R^{\cS}$,
+\begin{align*}
+\norm{M q - M q'}_\infty & \le \norm{q-q'}_\infty\,,\\
+\norm{M_\pi q - M_\pi q'}_\infty & \le \norm{q-q'}_\infty\,,\\
+\norm{P v - P v'}_\infty & \le \norm{v-v'}_\infty\,.
+\end{align*}
+\hint To show that $M$ is a non-expansion, consider proving that $|\max_a q(a) - \max_b q'(b) |\le \norm{q-q'}_\infty$ holds for any $q,q'\in \R^{\cA}$.
+\tpoints{10}
+\end{question}
+
+
+
+\if0
+\begin{question}
+Show that $T$, the Bellman optimality operator, is a $\gamma$-contraction with respect to the max-norm.
+
+\hint Use \eqref{eq:tdec}.
+\tpoints{5}
+\end{question}
+
+
+\fi
+
+\begin{question}\label{q:qcontr}
+Let $\tilde T: \R^{\cS \times \cA} \to \R^{\cS \times \cA}$ be defined using
+$\tilde T q = r+ \gamma P M q$.
+Show that $\tilde T$ is a $\gamma$-contraction with respect to the max-norm.
+\tpoints{5}
+\end{question}
+
+
+
+\begin{question}\label{q:qv}
+Let $q^*$ be the fixed point of $\tilde T$ defined in Question~\ref{q:qcontr}.
+Show that $v^* = M q^*$.
+\tpoints{8}
+\end{question}
+
+
+
+\begin{question}
+Let $q^*$ be the fixed point of $\tilde T$ as before. Show that $q^* = r+\gamma P v^*$.
+\tpoints{5}
+\end{question}
+
+
+
+
+\begin{question}
+Show that if $q^*\in \R^{\cS \times \cA}$ is the fixed-point of $\tilde T$ and if $\pi$ is a memoryless policy that chooses actions maximizing $q^*$ (i.e. $M_\pi q^*=M q^*$) 
+then $\pi$ is an optimal policy and any memoryless optimal policy can be found this way.
+\tpoints{5}
+\end{question}
+
+
+
+\begin{question}\label{q:eopt}
+Let $\pi$ be a memoryless policy and $\epsilon>0$. 
+Call $\pi$ \emph{$\epsilon$-optimizing} $M_\pi q^* \ge v^* - \epsilon \1$.
+Show that if $\pi$ is $\epsilon$-optimizing then $\pi$ is $\epsilon/(1-\gamma)$-optimal,
+that is, $v^\pi \ge v^* - \frac{\epsilon}{1-\gamma} \1$. \tpoints{10}
+\end{question}
+
+
+
+\begin{question}
+Show that if $q\in \R^{\cS\times \cA}$ is such that $\norm{q-q^*}_{\infty}\le \epsilon$ and $\pi$ is greedy with respect to $q$ (i.e., $M_\pi q = Mq$)
+then $\pi$ is $2\epsilon/(1-\gamma)$ optimal.
+
+\hint Aim for reusing the answer to Question~\ref{q:eopt}.
+\tpoints{5}
+\end{question}
+
+
+
+\begin{question}
+Let $\pi$ be a memoryless policy that selects $\epsilon$-optimal actions with probability at least $1-\zeta$ in each state (i.e., $\sum_{a: q^*(s,a)\ge v^*(s)-\epsilon} \pi(a|s) \ge 1-\zeta$). Show that $\pi$ is at least $(\epsilon + 2\zeta \norm{q^*}_\infty)/(1-\gamma)$ optimal. 
+Only assume that the reward is deterministic and bounded (i.e. do not assume it is in $[0, 1]$).
+\hint Aim for showing first that $\pi$ is $(\epsilon+2\zeta \norm{q^*}_{\infty})$-optimizing.
+\tpoints{5}
+\end{question}
+
+
+
+
+\bigskip
+\bigskip
+
+\noindent
+\textbf{
+Total for all questions: \arabic{DocPoints}}.
+Of this, 23 are bonus marks. 
+Your assignment will be marked out of 100.
+
+
+\end{document}
+
+
+
+
+

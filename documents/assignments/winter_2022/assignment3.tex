@@ -1,0 +1,303 @@
+\documentclass{article}
+\newcommand{\hwnumber}{3}
+
+\newcommand{\norm}[1]{\| #1 \|}
+\newcommand{\abs}[1]{| #1 |}
+
+
+\usepackage{fullpage,amsthm,amsmath,amssymb}
+\usepackage{algorithm,algorithmic}
+\usepackage{mathtools}
+\usepackage{bbm,bm}
+\usepackage{enumerate}
+\usepackage{cancel}
+\usepackage{xspace}
+\usepackage[textsize=tiny,
+]{todonotes}
+\newcommand{\todot}[1]{\todo[color=blue!20!white]{T: #1}}
+\newcommand{\todoc}[1]{\todo[color=orange!20!white]{Cs: #1}}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue,linkcolor=black]{hyperref}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\usepackage[capitalize]{cleveref}
+
+
+\usepackage{comment}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\cZ}{\mathcal{Z}}
+\newcommand{\cX}{\mathcal{X}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator*{\Exp}{\mathbf{E}}
+\DeclareMathOperator*{\1}{\mathbbm{1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\bbP}{\mathbb P}
+\newcommand{\V}{\mathbb V}
+\renewcommand{\P}[1]{P\left\{ #1 \right\}}
+\newcommand{\Prob}[1]{\mathbb{P}( #1 )}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\b}[1]{\mathbf{#1}}
+\newcommand{\EE}[1]{\E[#1]}
+\newcommand{\bfone}{\1}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\one}[1]{\mathbb{I}\{#1\}}
+\usepackage{xifthen}
+
+\newcounter{DocPoints} 
+\newcounter{QuestionPoints} 
+\newcommand{\points}[1]{	\par\mbox{}\par\noindent\hfill {\bf #1 points}	\addtocounter{DocPoints}{#1}
+	\addtocounter{QuestionPoints}{#1}
+}
+\newcommand{\tpoints}[1]{        	\ifthenelse{\isempty{#1}}	{	}	{		\addtocounter{DocPoints}{#1}
+		\addtocounter{QuestionPoints}{#1}
+	}													 	\par\mbox{}\par\noindent\hfill {Total: \bf \arabic{QuestionPoints}\xspace points}\par\mbox{}\par\hrule\hrule
+	\setcounter{QuestionPoints}{0}
+}
+\newcommand{\tpoint}[1]{
+	\tpoints{#1}
+}
+
+\theoremstyle{definition}
+\newtheorem{question}{Question}
+\newtheorem{assumption}{Assumption}
+\newtheorem*{assumption*}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem*{remark*}{Remark}
+\newtheorem{solution}{Solution}
+\newtheorem*{solution*}{Solution}
+
+\theoremstyle{theorem}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\excludecomment{solution}
+
+\newcommand{\hint}{\noindent \textbf{Hint}:\xspace}
+
+
+\usepackage{hyperref}
+
+\newcommand{\epssub}{\delta}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\sA}{\mathcal{A}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{CMPUT 605: Theoretical Foundations of Reinforcement Learning, Winter 2023\\ Homework \#\hwnumber}}
+\end{center}
+
+\section*{Instructions}
+\textbf{Submissions}
+You need to submit a single PDF file, named {\tt p0\hwnumber\_<name>.pdf} where {\tt <name>} is your name.
+The PDF file should include your typed up solutions (we strongly encourage to use pdf\LaTeX). 
+Write your name in the title of your PDF file.
+We provide a \LaTeX template that you are encouraged to use.
+To submit your PDF file you should send the PDF file via private message to Vlad Tkachuk on Slack before the deadline.
+
+\textbf{Collaboration and sources}
+Work on your own. You can consult the problems with your classmates, use books
+or web, papers, etc.
+Also, the write-up must be your own and you must acknowledge all the
+sources (names of people you worked with, books, webpages etc., including class notes.)
+Failure to do so will be considered cheating.
+Identical or similar write-ups will be considered cheating as well.
+Students are expected to understand and explain all the steps of their proofs.
+
+\textbf{Scheduling}
+Start early: It takes time to solve the problems, as well as to write down the solutions. Most problems should have a short solution (and you can refer to results we have learned about to shorten your solution). Don't repeat calculations that we did in the class unnecessarily.
+
+\vspace{0.3cm}
+
+\textbf{Deadline:} March 12 at 11:55 pm
+
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\nS}{\mathrm{S}}
+\newcommand{\nA}{\mathrm{A}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ip}[1]{\langle #1 \rangle}
+
+\section*{Tightness of performance bounds of greedy policies}
+
+Error bounds for greedy policies are at the heart of many of the upper bounds we obtained.
+Here you will be asked to show that these bounds are unimprovable.
+For example, in
+\href{http://rltheory.github.io/lecture-notes/planning-in-mdps/lec6/}{Lecture 6},
+the following is stated in
+Part II of the ``Policy error bound - I.'' lemma:
+\begin{lemma}
+Let $\pi$ be a memoryless policy and choose a function $q:\mathcal{S}\times\mathcal{A} \to \mathbb{R}$ and $\epsilon\ge 0$. Then,
+if $\pi$ is greedy with respect to $q$ then
+\begin{align*}
+v^\pi \ge v^* - \frac{2\|q-q^*\|_\infty}{1-\gamma} \boldsymbol{1}\,.
+\end{align*}
+\end{lemma}
+The first problem is to show that this bound is tight:
+\begin{question}
+Show that for any $\gamma\in [0,1)$ and $\varepsilon>0$ there is a finite
+discounted MDP $M=(\cS,\cA,P,r,\gamma)$ and $q:\cS \times \cA \to \R$ such that the following hold:
+\begin{enumerate}
+\item $\norm{q-q^*}_\infty  =\varepsilon$;
+\item There is policy $\pi$ that is greedy with respect to $q$ such that $\|v^\pi-v^*\|_\infty = \frac{2\varepsilon}{1-\gamma}$.
+\end{enumerate}
+\tpoints{10}
+\end{question}
+
+
+\section*{Average vs. mixed policies}
+Fix policies $\pi^{(1)},\dots,\pi^{(k)}$ of some finite discounted MDP $M=(\cS,\cA,P,r,\gamma)$.
+There are two ways of combining these policies with
+some weights $\alpha\in \cM_1([k])$.
+The first way is to choose one of the policies at random from the multinomial parameterized by $\alpha$
+and then follow the resulting policy for all the time steps.
+Formally, one would choose
+an index $I\in [k]$ at random such that $\Prob{I=i} = \alpha_i$
+and then follow the policy $\pi^{(I)}$ for whichever state one encounters.
+The second way is to choose the policy to follow at random in each time step.
+Call the policy that is obtained following the first method the ($\alpha$-weighted) \textbf{mixture of $\pi^{(1)},\dots,\pi^{(k)}$}.
+Call the policy that is obtained following the second method the ($\alpha$-weighted)
+\textbf{average of $\pi^{(1)},\dots,\pi^{(k)}$}.
+
+Intuitively,
+a distribution $\mu\in \cM_1(\cS)$ over the states and
+the interconnection of a mixture policy and $M$ gives rise to a probability space $(\Omega,\cF,\PP)$ that carries the random elements
+$I,S_0,A_0,S_1,A_1,\dots$ with $I\in [k]$, $S_t\in \cS$ and $A_t\in \cA$ for $t\ge 0$ and such that
+for $H_t = (S_0,A_0,S_1,\dots,A_{t-1},S_t)$,
+\begin{enumerate}
+\item  $\mathbb{P}(S_0 = s|I) = \mu(s)$ for all $s \in \mathcal{S}$,
+\item  $\mathbb{P}(A_t = a | I,H_t)
+			= \pi^{(I)}_t(a | H_t)$ for all $a \in \mathcal{A}, t \geq 0$,
+\item  $\mathbb{P}(S_{t+1} = s' | I, H_t, A_t) = P_{A_t}(S_t, s')$ for all $s' \in \mathcal{S}$, and
+\item $\PP(I=i)=\alpha_i$ for all $i\in [k]$.
+\end{enumerate}
+Note that all first three criteria are modified to express that the laws that govern $S_0$, the action distribution and the next state distribution are as before even when conditioning on $I$.
+A new, fourth criterion is added that expresses that
+the distribution of $I$ follows the multinomial distribution with parameter $\alpha$.
+That the probability distribution $\PP$ with the above properties
+exists is guaranteed again by the Ianescu-Tulcea theorem.
+As usual, when needed, we use $\PP_\mu$ to indicate the dependence of $\PP$ on $\mu$.
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\cG}{\mathcal{G}}
+
+Finally some notation:
+For a probability measure $\PP$ on a measurable space $(\Omega,\cF)$ and a sub-sigma algebra $\cG$ of $\cF$, let $\PP|_{\cG}$ be the probability measure on $(\Omega,\cG)$ obtained from $\PP$ by restricting it to $\cG$: $\PP|_{\cG}(U) = \PP(U)$ for any $U\in \cG$.
+
+\begin{question}
+Unless otherwise specified let
+ $\pi^{(1)},\dots,\pi^{(k)}$ be arbitrary policies of $M$ and let $\alpha\in \cM_1([k])$, $\mu \in \cM_1(\cS)$ be also arbitrary.
+ Also, let $(\Omega,\cF,\PP)$ as above (we shall also use $\PP_\mu$ when the dependence on $\mu$ is important).
+ Let
+ $Z = (S_0,A_0,S_1,A_1,\dots)$.
+Show that the following hold:
+\begin{enumerate}
+\item $Z$ is random element between $(\Omega,\cF)$ and $((\cS\times \cA)^{\N},\cG')$ where $\cG'$ is the product $\sigma$-algebra on $(\cS\times \cA)^{\N}$
+induced by the discrete topology on $\cS \times \cA$.
+\points{5}
+\item
+\label{q1:a3:1}
+Show that there is a policy $\bar \pi$ of the MDP $M$ such that for any $\mu \in \cM_1(\cS)$,
+the pushforward of $\PP_\mu$ under $Z$, $(\PP_\mu)_Z$ satisfies
+\[
+(\PP_\mu)_Z =\PP_\mu^{\bar \pi}
+\]
+where $\PP_\mu^{\bar \pi}$ is the unique probability measure on
+the canonical space $((\cS\times \cA)^{\N},\cG')$
+induced
+by the interconnection of  $\bar \pi$ and the MDP, given the initial state distribution $\mu$.
+That is, a mixture policy induces a policy $\bar \pi$ of the MDP $M$.
+\points{20}
+\item
+Let $R=\sum_{t=0}^\infty \gamma^t r_{A_t}(S_t)$ and
+let $\PP$ be as above with the choice $\mu= \delta_s$. Let $\E$ be the expectation operator
+corresponding to $\PP$.
+Show that $v(s)=\E[R]$ is well-defined:
+That is,
+for any $(\Omega,\cF,\PP)$ and $(\Omega,\cF,\PP')$ as long as $\PP$ and $\PP'$ satisfy the above four properties, $\E[R]=\E'[R]$ where $\E'$ is the expectation operator underlying $\PP'$.
+\points{10}
+\item
+Show that $v(s) = v^{\bar \pi}(s)$.
+\points{5}
+\item Let $\PP_\mu^{\pi^{(i)}}$ ($\PP_{\mu}^{\bar \pi}$) be the
+probability measures induced on the canonical space
+$((\cS \times \cA)^{\N},\cG')$ by the initial state distribution $\mu$ and the interconnection of
+$\pi^{(i)}$ (respectively, $\bar \pi$) with the MDP $M$. Show that
+$\PP_{\mu}^{\bar \pi} = \sum_{i=1}^k \alpha_i \PP_{\mu}^{\pi^{(i)}}$.
+\points{10}
+\item Mixing is guaranteed to keep performance bounds:
+if for some
+$v:\cS \to \R$ and for all $i\in [k]$,
+$v^{\pi^{(i)}}\ge v$ then $v^{\bar \pi}\ge v$.
+\points{5}
+\item Averaging is not guaranteed to keep performance bounds:
+For any $\gamma>1/2$
+there exists an MDP with state space $\cS$, $k\ge 2$, policies $\pi_1,\dots,\pi_k$, a function $v:\cS \to \R$ and $\alpha\in \cM_1([k])$ such that $v^{\pi_i}\ge v$ holds for all $i\in [k]$, yet if $\pi$ is the $\alpha$-average of $\pi_1,\dots,\pi_k$ then $v^\pi<v$.
+\points{10}
+\item The state-wise uniform average of all deterministic ML policies and the uniform mixture of all deterministic ML policies both give the policy that is uniform over all the actions.
+\points{5}
+\end{enumerate}
+\hint
+Recall the change-of-variables formula:
+For a random element $X$ taking values in some measurable set $\cX$,
+the pushforward $\PP_X$ of $X$ satisfies
+\begin{align*}
+\EE{ f(X) } = \int f(x) \PP_X(dx)\,.
+\end{align*}
+Recall also that integration is linear in measures.
+In particular,
+for any measures $\PP_i$ and nonnegative coefficients $\alpha_i$, $i\in[k]$
+and $f$ which is $(\sum_{i=1}^k \alpha \PP_i)$-integrable,
+ $\int f d(\sum_{i=1}^k \alpha \PP_i) = \sum_{i=1}^k \alpha_i \int f d\PP_i$
+ (this also extends to signed measures, but we won't need this extension).
+\tpoints{}
+\end{question}
+
+
+
+\section*{Finding needles with high probability}
+
+The high-probability needle lemma is as follows:
+\begin{lemma}[High-probability needle lemma]
+\label{lem:hpn}
+Any algorithm that
+correctly identifies the single nonzero entry in any binary array of length $k$
+with probability at least $0.91$
+has the property that
+on some input
+the expected number of queries that the algorithm uses is
+at least $\Omega(k)$.
+\end{lemma}
+
+\begin{question}
+Prove~\cref{lem:hpn}.
+Note that the algorithms are allowed to randomize.
+\tpoints{30}
+\end{question}
+
+
+
+
+
+\bigskip
+\bigskip
+
+\noindent
+\textbf{
+Total for all questions: \arabic{DocPoints}}.
+Of this, up to 20 can be bonus marks. You can receive bonus marks by asking/upvoting questions, for a total of 20 bonus marks!
+You must ask at least one question in one of the Lecture Discussion Threads by the Assignment 3 deadline to receive 12 bonus marks.
+You can also receive 2 bonus marks for upvoting at least one question before 8am on the day of each lecture, for a maximum of 2 marks x 4 lectures = 8 marks for upvoting.
+Your assignment will be marked out of \arabic{DocPoints} minus the bonus marks you received.
+
+\end{document}
+

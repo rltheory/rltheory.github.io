@@ -1,0 +1,295 @@
+\documentclass{article}
+\newcommand{\hwnumber}{1}
+
+\usepackage{fullpage,amsthm,amsmath,amssymb}
+\usepackage{algorithm,algorithmic}
+\usepackage{bbm,bm}
+\usepackage{enumerate}
+\usepackage{xspace}
+\usepackage[textsize=tiny,
+disable
+]{todonotes}
+\newcommand{\todot}[1]{\todo[color=blue!20!white]{T: #1}}
+\newcommand{\todoc}[1]{\todo[color=orange!20!white]{Cs: #1}}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue,linkcolor=black]{hyperref}
+
+
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator*{\Exp}{\mathbf{E}}
+\DeclareMathOperator*{\1}{\mathbbm{1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\V}{\mathbb V}
+\renewcommand{\P}[1]{P\left\{ #1 \right\}}
+\newcommand{\Prob}[1]{\mathbb{P}( #1 )}
+\newcommand{\Probg}[1]{\mathbb{P}\left( #1 \right)}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\RR}{\mathbb{R}}
+\renewcommand{\b}[1]{\mathbf{#1}}
+\newcommand{\EE}[1]{\E[#1]}
+\newcommand{\argmax}{\arg\max}
+
+\usepackage{xifthen}
+
+\newcounter{DocPoints} 
+\newcounter{QuestionPoints} 
+\newcommand{\points}[1]{	\par\mbox{}\par\noindent\hfill {\bf #1 points}	\addtocounter{DocPoints}{#1}
+	\addtocounter{QuestionPoints}{#1}
+}
+\newcommand{\tpoints}[1]{        	\ifthenelse{\isempty{#1}}	{	}	{		\addtocounter{DocPoints}{#1}
+		\addtocounter{QuestionPoints}{#1}
+	}													 	\par\mbox{}\par\noindent\hfill {Total: \bf \arabic{QuestionPoints}\xspace points}\par\mbox{}\par\hrule\hrule
+	\setcounter{QuestionPoints}{0}
+}
+\newcommand{\tpoint}[1]{
+	\tpoints{#1}
+}
+
+\newtheorem*{solution*}{Solution}
+
+\newcommand{\hint}{\noindent \textbf{Hint}:\xspace}
+
+\usepackage{hyperref}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{CMPUT 605: Theoretical Foundations of Reinforcement Learning, Winter 2023\\ Homework \#0}}
+\end{center}
+
+\textbf{Instructions:}
+You need to submit a single PDF file, named {\tt p0\hwnumber\_<name>.pdf} where {\tt <name>} is your name.
+The PDF file should include your typed up solutions (we strongly encourage to use pdf\LaTeX). 
+Write your name in the title of your PDF file.
+We provide a \LaTeX template that you are encouraged to use.
+To submit your PDF file you should send the PDF file via private message to Vlad Tkachuk on Slack before the deadline.
+
+\textbf{Collaboration and sources}
+Work on your own. You can consult the problems with your classmates, use books
+or web, papers, etc.
+Also, the write-up must be your own and you must acknowledge all the
+sources (names of people you worked with, books, webpages etc., including class notes.) 
+Failure to do so will be considered cheating.  
+Identical or similar write-ups will be considered cheating as well.
+Students are expected to understand and explain all the steps of their proofs.
+
+\textbf{Scheduling}
+Start early: It takes time to solve the problems, as well as to write down the solutions. Most problems should have a short solution (and you can refer to results we have learned about to shorten your solution). Don't repeat calculations that we did in the class unnecessarily.
+
+\vspace{0.3cm}
+
+\textbf{Deadline:} January 15 at 11:55 pm
+
+\section{In search of ...}
+\newcommand{\epssub}{\delta}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\sA}{\mathcal{A}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+
+Consider the following simple learning problem: 
+Fix $\delta>0$ and an integer $k>0$.
+Here, $k$ will be the number of actions available. Each action $i\in [k]:=\{1,\dots,k\}$ is assigned a value, say, $\mu_i$, which is a real number. The learner does not know these values.
+The problem of the learner is to find an action that is $\delta$ close to the best action out of $k$ actions (higher values are better).
+The learner can try any action in any order and can even randomize when choosing the next action.
+When choosing an action, the learner receives in response the value of the action (without noise!).
+When choosing an action, the learner can take into account all the past observations and choices: It has no limit of what it can remember, or on the precision of its memory.
+At one point, the learner needs to stop and return an action.
+
+A \emph{problem instance} 
+that the learner interacts with is fully characterized by $\mu = (\mu_1,\dots,\mu_k)\in \R^k$, the $k$ values assigned to the actions.
+The learner is called \emph{$\delta$-sound} for a set of instances $\cH\subset \R^k$ if no matter the problem instance taken from $\cH$, when the learner interacts with the aforementioned way with the chosen problem instance, the learner always stops and returns an action that is strictly less than $\delta$ away from the optimal action on that instance. If the instance was $\mu\in \R^k$, the learner chose $A\in [k]$, with probability one, it has to hold that $\mu_A> \max_{i\in [k]}\mu_i-\delta$ (note the strict inequality).
+For a learner $\cA$, let $q(\cA,\mu)$ be the expected value of the number of rounds that the learner spends with interacting with problem instance $\mu$ (we need the expected value, because learners may randomize).
+By slightly abusing notation, let $q(\cA,\cH) = \max_{\mu\in \cH} q(\cA,\mu)$ be the expected number of rounds that the learner $\cA$ will spend on the instance in $\cH$ which makes it the ``slowest''.
+
+Let $\cS(\cH,\delta)$ be the set of $\delta$-sound learners for $\cH$.
+Further, let $\cB = \{e_1,\dots,e_k\}\subset \R^k$ 
+where $e_i$ is the $i$th standard basis vector: $e_{ij}=0$ if $j\ne i$ and $e_{ii}=1$.
+
+
+\paragraph{Question 1} 
+Describe a \emph{deterministic} learner $\cA\in \cS(\cB,1)$ such that the learner stops on any instance in $\cB$ after at most \textcolor{red}{$k-1$} queries: $q(\cA,\cB)\le k-1$. 
+\tpoints{5}
+
+
+
+\paragraph{Question 2} 
+Formally prove that for the learner $\cA$ you described $\cA\in \cS(\cB,1)$ holds.
+\tpoints{5}
+
+
+
+\paragraph{Question 3} 
+Formally prove that for the learner $\cA$ you described $q(\cA,\cB)\le k-1$ holds.
+\tpoints{5}
+
+
+
+\paragraph{Question 4} 
+Show that any deterministic learner $\cA\in \cS(\cB,1)$ needs at least $k-1$ queries 
+in the worst case for instances in $\cB$.
+\medskip
+\tpoints{10}
+
+
+
+
+\paragraph{Question 5} 
+Describe a learner $\cA\in \cS(\cB,1)$ (deterministic or not) such that the learner stops on any instance in $\cB$ after at most \textcolor{red}{$(k+1)/2 - 1/k$} queries on expectation: \textcolor{red}{$q(\cA,\cB)\le (k+1)/2 - 1/k$}. 
+Formally prove that the learner is indeed sound and it indeed stops after at most \textcolor{red}{$(k+1)/2 -1/k$} queries on expectation, on every problem instance in $\cB$.
+\tpoints{15}
+
+
+
+\paragraph{Question 6} 
+Show that any learner $\cA\in \cS(\cB,1)$ needs at least \textcolor{red}{$(k+1)/2-1/k$} queries 
+on expectation in the worst case for instances in $\cB$.
+That is, prove that for any \textcolor{red}{$\cA\in \cS(\cB,1)$, 
+$q(\cA,\cB)\ge (k+1)/2 -1/k$}. 
+\medskip
+
+\noindent \textbf{Hint:}
+Yao's lemma states
+``that the expected cost of a randomized algorithm on the worst-case input is no better than the expected cost for a worst-case probability distribution on the inputs of the deterministic algorithm that performs best against that distribution.'' (source: \href{shorturl.at/cjrU7}{wikipedia}).
+Use this lemma.
+
+\tpoints{15}
+
+
+
+\paragraph{Question 7 (for fun)} 
+It appears that as far as the expected number of rounds is considered,
+randomized learners can do better than deterministic learners.
+Is this \emph{real}?
+Would \emph{you} implement the randomized learner? Why or why not?
+\medskip
+
+\tpoints{0}
+
+
+
+\section{Basic probability questions}
+
+Assume that you are given a randomized algorithm $\cB$ that returns the \emph{unique} correct answer on any problem it is fed with (e.g., computing a shortest path) with probability at least $2/3$.
+Fix $\delta>0$. 
+
+\paragraph{Question 8}
+Design an algorithm that returns the correct answer with probability at least $1-\delta$.
+The algorithm may use $\cB$. 
+Describe how your algorithm works (pseudocode preferred).
+\tpoints{5}
+
+
+
+\paragraph{Question 9}
+Bound the expected runtime of your algorithm as a function of the expected runtime of $\cB$.
+In particular, if the expected runtime of $\cB$ on input $x$ is $r(\cB,x)$, then show that the expected runtime of your algorithm on input $x$ is at most $\lceil 72 \ln(1/\delta) \rceil \, r(\cB,x)$.
+If needed modify your algorithm (in which case modify your answer to the previous question).
+
+\noindent \textbf{Hint}: 
+Use the ``Chernoff lower tail bound'' for independent Bernoulli variables.
+This states the following:
+Let $S$ be the sum of $n$ independent Bernoulli random variables. 
+Let $\mu = \EE{S}$ be the expected value of $S$.
+Then, for any $0\le \delta \le 1$, $\Prob{ S\le (1-\delta)\mu } \le \exp( - \mu \delta^2/3)$.
+\tpoints{5}
+
+
+
+\paragraph{Question 10}
+For the same setting as in Question 8, now consider the case when $\cB$ itself is correct with probability at least $1-\delta$.
+Consider the case when $\cB$ is run on $s$ different inputs.
+Show that 
+for any $s\le 1/\delta$,
+the probability that $\cB$ is correct on \emph{all these inputs} is at least $1-s\delta$.
+\tpoints{5}
+
+
+
+
+\section{Basic calculus and such}
+\newcommand{\norm}[1]{\|#1\|}
+\paragraph{Question 11}
+For $x\in \R^d$ and $p\ge 1$ let $\norm{x}_{p} = (\sum_{i=1}^d |x_i|^p)^{1/p}$.
+For $p=\infty$, let $\norm{x}_\infty = \max_i |x_i|$.
+Show that for any $x$, $1\le p\le q\le \infty$, $\norm{x}_p \ge \norm{x}_q$.
+\tpoints{5}
+
+
+
+
+\paragraph{Question 12}
+Let $1\le p \le \infty$. 
+Show that for any $c\in \R$, $x,y\in \R^d$, the following hold:
+\begin{enumerate}
+\item $\norm{x}_p\ge 0$ and if $\norm{x}_p=0$ then $x=0$;
+\points{5}
+\item $\norm{c x}_p = |c| \, \norm{x}_p$;
+\points{5}
+\item $\norm{x+y}_p \le \norm{x}_p + \norm{y}_p$.
+\points{5}
+\end{enumerate}
+(That is, $\norm{\cdot}_p$ is a norm on $\R^d$.)
+\tpoints{}
+
+
+
+
+\paragraph{Question 13}
+Let $\norm{\cdot}$ be any norm on the vector-space of $d\times d$ matrices (that is, 
+$\norm{\cdot}:\R^{d\times d} \to \R$ satisfies the properties of a norm when we treat $\R^{d\times d}$ as a $d^2$-dimensional vector space over the reals).
+Further, assume that $\norm{\cdot}$ is submultiplicative: for any $A,B\in \R^{d\times d}$, $\norm{AB}\le \norm{A}\norm{B}$.
+Let $I$ be the $d\times d$ identity matrix, $A\in \R^{d\times d}$ arbitrary.
+Show that $I-A$ is nonsingular when $\sum_{k=0}^\infty \norm{A}^k<\infty$.
+
+\noindent \textbf{Hint}: Perhaps the inverse of $I-A$ is equal to $\sum_{k\ge 0} A^k$? But is this infinite sum even well-defined?
+\tpoints{15}
+
+
+
+
+\paragraph{Question 14}
+Let now $\norm{\cdot}$ be a norm on $\R^d$.
+Call $s: \R^{d\times d} \to \R$ the ``norm induced by $\norm{\cdot}$'' when for any $A\in \R^{d\times d}$, $s(A) = \sup_{x\in \R^d, \norm{x}=1} \norm{ A x}$.
+Show that $s$ is a submultiplicative norm on $\R^{d\times d}$, i.e., it satisfies the premise of the previous question. 
+\tpoints{5}
+
+
+
+
+\paragraph{Question 15}
+Calculate a closed form expression for $s(A)$ with $A\in \R^{d\times d}$ and $s$ the norm induced on $\R^{d\times d}$ by the vector-space norm $\norm{\cdot}_\infty$.
+\tpoints{5}
+
+
+
+
+\paragraph{Question 16}
+Let $T:U\to V$ be a map from a normed vector space $U$ over the reals to another normed vector space $V$ over the reals. Possibly $U\ne V$, so the norms will also be different, but to reduce clutter, we just use $\norm{\cdot}$ to denote the norms on all the vector spaces as from the context it will always be clear which norm we are concerned with.
+Fix $L\ge 0$. The map $T$ is called $L$-Lipschitz if $\norm{T(u)-T(u')}\le L \norm{u-u'}$. 
+\begin{enumerate}
+\item Why can we write $T(u)-T(u')$? What set does the result of this operation belong to? Why?
+\points{2}
+\item Let $T:U\to V$ be $L$-Lipschitz, $S:V \to W$ be $M$-Lipschitz ($W$ is also a normed vector space and $M\ge 0$).
+Prove that $S \circ T$ is $LM$-Lipschitz. Here, $S\circ T$ is the composition of $T$ and $S$. Thus, $S\circ T: U \to W$ and in particular $(S\circ T)(u) = S(T(u))$.
+\points{8}
+\end{enumerate}
+\tpoints{}
+
+
+
+
+\bigskip
+\bigskip
+
+\noindent
+\textbf{
+Total for all questions: \arabic{DocPoints}}
+
+
+\end{document}
+

@@ -1,0 +1,5 @@
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+
+theme: "just-the-docs" # build settings
+
+local_sandboxing: true

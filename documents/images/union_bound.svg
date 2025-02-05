@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="161.95583mm"
+   height="102.44262mm"
+   viewBox="0 0 161.95582 102.44262"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   sodipodi:docname="union_bound.svg"
+   inkscape:export-filename="/media/shivam/Stuff3/UAlberta/Sem_4/rl_theory/rltheory.github.io/documents/images/union_bound.png"
+   inkscape:export-xdpi="150"
+   inkscape:export-ydpi="150">
+  <defs
+     id="defs2">
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mend"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path883"
+         style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:#ff0c0c;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.8126134"
+     inkscape:cx="273.21459"
+     inkscape:cy="274.64915"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1300"
+     inkscape:window-height="741"
+     inkscape:window-x="66"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-17.024733,-95.354761)">
+    <ellipse
+       style="opacity:1;fill:#b3b3b3;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.20903325;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path815"
+       cx="10.005672"
+       cy="173.56799"
+       rx="66.654778"
+       ry="44.471668"
+       transform="matrix(0.96848276,-0.24908058,0.43425603,0.90078949,0,0)" />
+    <ellipse
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.42459691;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path815-3"
+       cx="117.83452"
+       cy="-144.45146"
+       rx="22.585855"
+       ry="17.013315"
+       transform="matrix(0.9593375,0.2822615,0.42724014,-0.90413819,0,0)" />
+    <ellipse
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.38370848;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path815-3-6"
+       cx="141.12277"
+       cy="-111.73302"
+       rx="23.34267"
+       ry="16.040388"
+       transform="matrix(0.96799049,0.25098687,0.47256308,-0.88129685,0,0)" />
+    <ellipse
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.41307342;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path815-3-6-7"
+       cx="216.34015"
+       cy="-158.90614"
+       rx="21.877392"
+       ry="11.73449"
+       transform="matrix(0.98454115,0.17515345,0.6157696,-0.78792627,0,0)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:9.11815071px;line-height:12.21180916px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.48847237"
+       x="63.385468"
+       y="136.42259"
+       id="text864"><tspan
+         sodipodi:role="line"
+         id="tspan862"
+         x="63.385468"
+         y="136.42259"
+         style="stroke-width:0.48847237"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_AMS;-inkscape-font-specification:MathJax_AMS;stroke-width:0.48847237"
+   id="tspan866">P</tspan>(<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_Caligraphic;-inkscape-font-specification:MathJax_Caligraphic;stroke-width:0.48847237"
+   id="tspan870">E<tspan
+   style="font-size:5.92679787px;baseline-shift:sub;stroke-width:0.48847237"
+   id="tspan876">1</tspan></tspan>) = <tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_Math;-inkscape-font-specification:MathJax_Math;stroke-width:0.48847237"
+   id="tspan868">δ<tspan
+   style="font-size:5.92679787px;baseline-shift:sub;stroke-width:0.48847237"
+   id="tspan880">1</tspan></tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:4.93888855px;line-height:6.61458302px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="46.778934"
+       y="77.523491"
+       id="text874"><tspan
+         sodipodi:role="line"
+         id="tspan872"
+         x="46.778934"
+         y="82.113739"
+         style="stroke-width:0.26458332" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:9.11815071px;line-height:12.21180916px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.4884724"
+       x="30.543175"
+       y="166.33052"
+       id="text864-4"><tspan
+         sodipodi:role="line"
+         id="tspan862-8"
+         x="30.543175"
+         y="166.33052"
+         style="stroke-width:0.4884724"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_AMS;-inkscape-font-specification:MathJax_AMS;stroke-width:0.4884724"
+   id="tspan866-1">P</tspan>(<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_Caligraphic;-inkscape-font-specification:MathJax_Caligraphic;stroke-width:0.4884724"
+   id="tspan870-2">E<tspan
+   style="font-size:64.99999762%;baseline-shift:sub"
+   id="tspan915">2</tspan></tspan>) = <tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_Math;-inkscape-font-specification:MathJax_Math;stroke-width:0.4884724"
+   id="tspan868-9">δ<tspan
+   style="font-size:64.99999762%;baseline-shift:sub"
+   id="tspan943">2</tspan></tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:9.11815071px;line-height:12.21180916px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.4884724"
+       x="94.199646"
+       y="165.28374"
+       id="text864-6"><tspan
+         sodipodi:role="line"
+         id="tspan862-80"
+         x="94.199646"
+         y="165.28374"
+         style="stroke-width:0.4884724"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_AMS;-inkscape-font-specification:MathJax_AMS;stroke-width:0.4884724"
+   id="tspan866-2">P</tspan>(<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_Caligraphic;-inkscape-font-specification:MathJax_Caligraphic;stroke-width:0.4884724"
+   id="tspan870-1">E<tspan
+   style="font-size:64.99999762%;baseline-shift:sub"
+   id="tspan937">3</tspan></tspan>) = <tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_Math;-inkscape-font-specification:MathJax_Math;stroke-width:0.4884724"
+   id="tspan868-5">δ<tspan
+   style="font-size:64.99999762%;baseline-shift:sub"
+   id="tspan941">3</tspan></tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:9.11815071px;line-height:12.21180916px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.4884724"
+       x="105.09747"
+       y="102.27351"
+       id="text864-1"><tspan
+         sodipodi:role="line"
+         id="tspan862-0"
+         x="105.09747"
+         y="102.27351"
+         style="stroke-width:0.4884724"><tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_AMS;-inkscape-font-specification:MathJax_AMS;stroke-width:0.4884724"
+   id="tspan866-8">P</tspan>(<tspan
+   style="-inkscape-font-specification:'Courier New';font-family:'Courier New';font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
+   id="tspan859">None</tspan>) = 1- ∑<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:MathJax_Math;-inkscape-font-specification:MathJax_Math;stroke-width:0.4884724"
+   id="tspan868-6">δ<tspan
+   style="font-size:64.99999762%;baseline-shift:sub"
+   id="tspan852">i</tspan></tspan></tspan></text>
+    <path
+       style="fill:#ff0000;stroke:#ff0c0c;stroke-width:0.86500001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Mend)"
+       d="m 126.3401,135.93807 c 0.22972,-2.19211 2.70607,-25.86653 2.70607,-25.86653"
+       id="path854"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>

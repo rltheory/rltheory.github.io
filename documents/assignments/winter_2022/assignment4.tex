@@ -1,0 +1,355 @@
+\documentclass{article}
+\newcommand{\hwnumber}{4}
+
+\newcommand{\norm}[1]{\| #1 \|}
+\newcommand{\abs}[1]{| #1 |}
+
+
+\usepackage{fullpage,amsthm,amsmath,amssymb}
+\usepackage{algorithm,algorithmic}
+\usepackage{mathtools}
+\usepackage{bbm,bm}
+\usepackage{enumerate}
+\usepackage{cancel}
+\usepackage{xspace}
+\usepackage[textsize=tiny,
+]{todonotes}
+\newcommand{\todot}[1]{\todo[color=blue!20!white]{T: #1}}
+\newcommand{\todoc}[1]{\todo[color=orange!20!white]{Cs: #1}}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue,linkcolor=black]{hyperref}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\usepackage[capitalize]{cleveref}
+
+
+\usepackage{comment}
+
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\cZ}{\mathcal{Z}}
+\newcommand{\cX}{\mathcal{X}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator*{\Exp}{\mathbb{E}}
+\newcommand{\E}{\mathbb{E}}
+\DeclareMathOperator*{\1}{\mathbbm{1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\bbP}{\mathbb P}
+\newcommand{\V}{\mathbb V}
+\renewcommand{\P}[1]{P\left\{ #1 \right\}}
+\newcommand{\Prob}[1]{\mathbb{P}( #1 )}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\b}[1]{\mathbf{#1}}
+\newcommand{\EE}[1]{\E[#1]}
+\newcommand{\bfone}{\1}
+\newcommand{\one}[1]{\mathbb{I}\{#1\}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\0}{\mathbf{0}}
+\usepackage{xifthen}
+
+\newcounter{DocPoints} 
+\newcounter{QuestionPoints} 
+\newcommand{\points}[1]{	\par\mbox{}\par\noindent\hfill {\bf #1 points}	\addtocounter{DocPoints}{#1}
+	\addtocounter{QuestionPoints}{#1}
+}
+\newcommand{\tpoints}[1]{        	\ifthenelse{\isempty{#1}}	{	}	{		\addtocounter{DocPoints}{#1}
+		\addtocounter{QuestionPoints}{#1}
+	}													 	\par\mbox{}\par\noindent\hfill {Total: \bf \arabic{QuestionPoints}\xspace points}\par\mbox{}\par\hrule\hrule
+	\setcounter{QuestionPoints}{0}
+}
+\newcommand{\tpoint}[1]{
+	\tpoints{#1}
+}
+
+\theoremstyle{definition}
+\newtheorem{question}{Question}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem*{assumption*}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem*{remark*}{Remark}
+\newtheorem{solution}{Solution}
+\newtheorem*{solution*}{Solution}
+
+\theoremstyle{theorem}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+
+\excludecomment{solution}
+
+\newcommand{\hint}{\noindent \textbf{Hint}:\xspace}
+
+
+\usepackage{hyperref}
+
+\newcommand{\epssub}{\delta}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\sA}{\mathcal{A}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{CMPUT 605: Theoretical Foundations of Reinforcement Learning, Winter 2023\\ Homework \#\hwnumber}}
+\end{center}
+
+\section*{Instructions}
+\textbf{Submissions}
+You need to submit a single PDF file, named {\tt p0\hwnumber\_<name>.pdf} where {\tt <name>} is your name.
+The PDF file should include your typed up solutions (we strongly encourage to use pdf\LaTeX). 
+Write your name in the title of your PDF file.
+We provide a \LaTeX template that you are encouraged to use.
+To submit your PDF file you should send the PDF file via private message to Vlad Tkachuk on Slack before the deadline.
+
+\textbf{Collaboration and sources}
+Work on your own. You can consult the problems with your classmates, use books
+or web, papers, etc.
+Also, the write-up must be your own and you must acknowledge all the
+sources (names of people you worked with, books, webpages etc., including class notes.) 
+Failure to do so will be considered cheating.  
+Identical or similar write-ups will be considered cheating as well.
+Students are expected to understand and explain all the steps of their proofs.
+
+\textbf{Scheduling}
+Start early: It takes time to solve the problems, as well as to write down the solutions. Most problems should have a short solution (and you can refer to results we have learned about to shorten your solution). Don't repeat calculations that we did in the class unnecessarily.
+
+\vspace{0.3cm}
+
+\textbf{Deadline:} March 26 at 11:55 pm
+
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\nS}{\mathrm{S}}
+\newcommand{\nA}{\mathrm{A}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ip}[1]{\langle #1 \rangle}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\cG}{\mathcal{G}}
+
+\section*{Large action set query lower bound}
+
+
+We recall a few definitions and results from 
+\href{https://rltheory.github.io/lecture-notes/planning-in-mdps/lec9/}{Lecture 9}.
+For a featurized MDP $(M,\phi)$, let
+\begin{align}
+\varepsilon^*(M,\Phi) : = \sup_{\pi \text{ memoryless}} \inf_{\theta\in \mathbb{R}^d} \| \Phi \theta - q^\pi \|_\infty\,.
+\label{eq:polerr}
+\end{align}
+
+\begin{definition}
+An online planner is $(\delta,\varepsilon)$-sound if
+for any finite discounted MDP $M=(\mathcal{S},\mathcal{A},P,r,\gamma)$
+and feature-map $\varphi:\mathcal{S}\times \mathcal{A}\to \mathbb{R}^d$ such that
+$\varepsilon^*(M,\Phi)\le \varepsilon$,
+when interacting with $(M,\varphi)$, the planner induces a $\delta$-suboptimal policy of $M$.
+\end{definition}
+
+\noindent The following was proven in the said lecture:
+
+\begin{theorem}[Query lower bound: large action sets]
+\label{thm:qlb}
+\label{thm:melesslb}
+For any $\varepsilon>0$, $0<\delta\le 1/2$, positive integer $d$
+and
+for any $(\delta,\varepsilon)$-sound online planner $\mathcal{P}$
+there exists a featurized-MDP $(M,\varphi)$ with rewards in $[0,1]$ with $\varepsilon^*(M,\Phi)\le \varepsilon$ such that
+when interacting with a simulator of $(M,\varphi)$,
+the expected number of queries used by
+$\mathcal{P}$ 
+is at least $\Omega(f(d,\varepsilon,\delta))$ where
+\begin{align*}
+f(d,\varepsilon,\delta) = \exp\left( \frac{1}{32} \left(\frac{\sqrt{d}\varepsilon}{\delta}\right)^2 \right)\,.
+\end{align*}
+\end{theorem}
+
+\begin{question}
+  The lecture notes provide a proof sketch for this theorem. Formally prove this theorem, explicitly explain each step of your proof. 
+\tpoints{20}
+\end{question}
+
+
+
+\section*{Fixed-horizon fundamental theorem}
+The same lecture stated the fundamental theorem for fixed-horizon problems, which we copy here for convenience. For the definitions of the quantities used in the theorem, see the lecture notes.
+\begin{theorem}[Fixed-horizon fundamental theorem]
+\label{thm:fhft}
+We have $v_0^*\equiv \boldsymbol{0}$ and for any $h\ge 0$, $v_{h+1}^* = T v_h^*$. Furthermore,
+for any $\pi_0^*,\dots,\pi_h^*, \dots$ such that for $i\ge 0$,
+$\pi_i^*$ is greedy with respect to $v_i^*$,
+for any $h>0$ it holds that
+$\pi=(\pi_{h-1}^*,\dots,\pi_0^*, \dots)$ (i.e., the policy which in step $0$ uses $\pi_{h-1}^*$, in step $1$ uses $\pi_{h-2}^*$, $\dots$, in step $(h-1)$ uses $\pi_0^*$, after which it continues arbitrarily) is $h$-step optimal:
+\begin{align*}
+v^{\pi}_h = v_h^*\,.
+\end{align*}
+\end{theorem}
+In the lecture notes we did not give a proof.
+\begin{question}
+Prove \cref{thm:fhft}.
+\hint 
+Use induction and mimic the previous proofs.
+\tpoints{50}
+\end{question}
+
+
+
+\section*{Statisticians also have limits}
+Let $\cX$ be a subset of a Euclidean space equipped with the usual Borel $\sigma$-algebra, 
+$\cP\subset \cM_1(\cX)$ a set of probability distributions over $\cX$.
+Let $f:\cP \to \RR$ be a fixed function.
+We consider statistical estimation problems where a random ``data'' $X\in \cX$ is observed
+from an unknown $P\in \cP$
+and the job of the statistician is to produce an estimate of $f(P)$.
+
+That is, the statistician needs to design an estimator; for simplicity we assume that the estimators are not randomizing (an extension to randomizing estimators is trivial).
+A non-randomizing estimator maps the data to a real; thus, any such estimator is a map $g:\cX \to \RR$.
+We assume that $g$ is measurable so that we can talk about the probability of errors.
+
+In particular, for $\delta\in [0,1]$ and $\varepsilon>0$, 
+we say that $g$ is \textbf{$(\delta,\varepsilon)$-sound} for the problem specified by $(\cP,f)$ if for any $P\in \cP$,
+\begin{align}
+P( |g(X)-f(P)|>\varepsilon)\le \delta\,.
+\label{eq:sstat}
+\end{align}
+Here, $X:\cX \to \cX$ is treated as the identity map, as usual: $X(x) = x$, $x\in \cX$.
+Thus, the above probability is the probability assigned by $P$ to the set 
+\[
+\{ x\in \cX\,:\, |g(x)-f(P)|>\varepsilon \}
+\]
+and condition \eqref{eq:sstat} has the equivalent form that for any $P\in \cP$,
+\begin{align*}
+P(\{ x\in \cX\,:\, |g(x)-f(P)|>\varepsilon \} )\le \delta\,.
+\end{align*}
+It is just shorter and more elegant to write \cref{eq:sstat}, hence, we will stick to this usual form.
+
+For two probability measures, $P,Q$, over the same measurable space $(\Omega,\cF)$, we define their \textbf{relative entropy} by
+\begin{align*}
+D(P,Q) =
+\begin{cases}
+ \int \log \frac{dP}{dQ}(\omega) \, dP(\omega) \,, & \text{ if } P\ll Q\;\\
+ +\infty\,, & \text{otherwise}\,.
+ \end{cases}
+\end{align*}
+The relative entropy is also known as the Kullback-Leibler divergence between $P$ and $Q$ (see Chapter 14 in the 
+\href{https://tor-lattimore.com/downloads/book/book.pdf}{bandit book} for an explanation of its origin and some examples).
+
+The following result, which is Theorem 14.12 in that book, will be useful:
+\newcommand{\KL}{D}
+\begin{theorem}[Bretagnolle--Huber inequality]
+\label{thm:pinskerhp}\index{Bretagnolle-Huber inequality|textbf}
+Let $P$ and $Q$ be probability measures on the same measurable space $(\Omega, \cF)$, and let $A \in \cF$ be an arbitrary event. Then,
+\begin{align}\label{eq:pinskerhp}
+P(A) + Q(A^c) \geq \frac{1}{2} \exp\left(-\KL(P, Q)\right)\,,
+\end{align} 
+where $A^c = \Omega \setminus A$ is the complement of $A$.
+\end{theorem} 
+
+
+\begin{question}
+\label{q:lbcore}
+Show that if there is an $(\delta,\varepsilon)$-sound estimator for $(\cP,f)$ then
+\begin{align*}
+\log\left(\frac{1}{4\delta}\right) \le \inf \{ D(P_0,P_1) \,:\, P_0,P_1\in \cP \text{ s.t. }
+|f(P_0)-f(P_1)|>2\varepsilon \} \,.
+\end{align*}
+
+In words, distributions whose $f$-values are separated by $2\varepsilon$ cannot be too close to each other  if a $(\delta,\varepsilon)$-sound estimator exist. This should be quite intuitive.
+\tpoints{20}
+\end{question}
+
+
+
+In what follows, we will deal with Bernoulli random variables. The relative entropy between Bernoulli distributions has special properties which we will find useful. The next problem asks you to prove some of these properties.
+
+\newcommand{\Ber}{\text{Ber}}
+Let $\Ber(p)$ denote the Bernoulli distribution with parameter $p\in [0,1]$. 
+As it is well known (and not hard to see from the definition),
+\begin{align*}
+D(\Ber(p),\Ber(q)) = d(p,q)
+\end{align*}
+where $d(p,q)$ is the so-called \textbf{binary relative entropy function}, which is defined as
+\begin{align*}
+d(p,q) = p\log(p/q) + (1-p) \log( (1-p)/(1-q))\,.
+\end{align*}
+
+\begin{question}
+\label{q:ber}
+Show that for $p,q\in (0,1)$, defining $p^*$ to be $p$ or $q$ depending on which is further away from $1/2$,
+\begin{align}
+d(p,q) \le \frac{(p-q)^2}{2p^*(1-p^*)}\,.
+\label{eq:dpq}
+\end{align}
+\hint 
+Notice that $d(p,q)=D_R( (p,1-p), (q,1-q))$, where $D_R$ is Bregman divergence with respect to our old friend, the unnormalized negentropy $R$ over $[0,\infty)^2$. Then use Theorem 26.12 from the bandit book.
+\tpoints{20}
+\end{question}
+
+
+Now, for $n>0$ let $\Ber^{\otimes n}(p)$ denote the $n$-fold product of $\Ber(p)$ with itself, 
+so that if $X\sim \Ber^{\otimes n}(p)$ then $X = (X_1,\dots,X_n)$ where $X_i \sim \Ber(p)$ and $(X_1,\dots,X_n)$ is an independent sequence.
+
+Take $\cX = \{0,1\}^n$ and $\cP_n = \{ \Ber^{\otimes n}(p) \,:\, p\in [0,1] \}$.
+Let $f:\cP_n \to [0,1]$ be defined by $f(\Ber^{\otimes n}(p)) = p$.
+The problem specified by $(\cP_n,f)$ is the problem of estimating the parameter 
+of a Bernoulli distribution given $n$ independent observations from the said, unknown distribution.
+
+\begin{question}
+Show that for the Bernoulli estimation problem described above,
+for $\delta\in [0,1]$ and $0\le \varepsilon^2<1/32$ fixed, there is no $(\delta,\varepsilon)$-sound estimator
+of the common mean, unless
+ $n\ge \frac{\log(1/(4\delta))}{16 \varepsilon^2} $.
+  
+\hint Use that $D(P^{\otimes n},Q^{\otimes n}) = n D(P,Q)$ and the statements from the previous two problems.
+\tpoints{20}
+\end{question}
+
+
+Now consider the problem when the definition of $f$ is changed to 
+\begin{align}
+f_\gamma(\Ber^{\otimes n}(p)) = \frac{1}{1-\gamma p}\,,
+\label{eq:disf}
+\end{align}
+where $0<\gamma<1$.
+
+\begin{question}
+Show that for the Bernoulli estimation problem described above with $f=f_\gamma$ as in \cref{eq:disf},
+with some constants $\gamma_0>0$ and $c_0,c_1>0$, 
+for $\delta\in [0,1]$, $\varepsilon\le c_0/(1-\gamma)$, $\gamma\ge \gamma_0$,
+the necessary condition for the existence of 
+ $(\delta,\varepsilon)$-sound estimator for $(\cP_n,f_\gamma)$ is 
+that
+ $n\ge c_1 \frac{\log(1/(4\delta))}{(1-\gamma)^3 \varepsilon^2}$.
+ 
+\hint Use the same strategy as in the solution of the previous exercise.
+\tpoints{40}
+\end{question}
+
+
+
+
+
+\bigskip
+\bigskip
+
+\noindent
+\textbf{
+Total for all questions: \arabic{DocPoints}}.
+Of this, up to 70 can be bonus marks. You can receive bonus marks by asking/upvoting questions, for a total of 70 bonus marks!
+You must ask at least one question in one of the Lecture Discussion Threads by the Assignment 4 deadline to receive 50 bonus marks.
+You can also receive 5 bonus marks for upvoting at least one question before 8am on the day of each lecture, for a maximum of 5 marks x 4 lectures = 20 marks for upvoting.
+Your assignment will be marked out of \arabic{DocPoints} minus the bonus marks you received.
+
+
+
+\end{document}
+
+
+
+
+

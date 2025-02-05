@@ -1,0 +1,353 @@
+\documentclass{article}
+\newcommand{\hwnumber}{1}
+
+\newcommand{\norm}[1]{\| #1 \|}
+\newcommand{\abs}[1]{| #1 |}
+
+\usepackage{fullpage,amsthm,amsmath,amssymb}
+\usepackage{algorithm,algorithmic}
+\usepackage{mathtools}
+\usepackage{bbm,bm}
+\usepackage{enumerate}
+\usepackage{xspace}
+\usepackage[textsize=tiny,
+]{todonotes}
+\newcommand{\todot}[1]{\todo[color=blue!20!white]{T: #1}}
+\newcommand{\todoc}[1]{\todo[color=orange!20!white]{Cs: #1}}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue,linkcolor=black]{hyperref}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+
+\usepackage{comment}
+
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator*{\Exp}{\mathbf{E}}
+\DeclareMathOperator*{\1}{\mathbbm{1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\V}{\mathbb V}
+\renewcommand{\P}[1]{P\left\{ #1 \right\}}
+\newcommand{\Prob}[1]{\mathbb{P}( #1 )}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\b}[1]{\mathbf{#1}}
+\newcommand{\EE}[1]{\E[#1]}
+\newcommand{\bfone}{\1}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\cF}{\mathcal{F}}
+\usepackage[capitalize]{cleveref}
+\usepackage{xifthen}
+
+\newcounter{DocPoints} 
+\newcounter{QuestionPoints} 
+\newcommand{\points}[1]{	\par\mbox{}\par\noindent\hfill {\bf #1 points}	\addtocounter{DocPoints}{#1}
+	\addtocounter{QuestionPoints}{#1}
+}
+\newcommand{\tpoints}[1]{        	\ifthenelse{\isempty{#1}}	{	}	{		\addtocounter{DocPoints}{#1}
+		\addtocounter{QuestionPoints}{#1}
+	}													 	\par\mbox{}\par\noindent\hfill {Total: \bf \arabic{QuestionPoints}\xspace points}\par\mbox{}\par\hrule\hrule
+	\setcounter{QuestionPoints}{0}
+}
+\newcommand{\tpoint}[1]{
+	\tpoints{#1}
+}
+
+\theoremstyle{definition}
+\newtheorem{question}{Question}
+\newtheorem{assumption}{Assumption}
+\newtheorem*{assumption*}{Assumption}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem*{remark*}{Remark}
+\newtheorem{solution}{Solution}
+\newtheorem*{solution*}{Solution}
+
+\excludecomment{solution}
+
+\newcommand{\hint}{\noindent \textbf{Hint}:\xspace}
+
+\usepackage{hyperref}
+
+\newcommand{\epssub}{\delta}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\sA}{\mathcal{A}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{CMPUT 653: Theoretical Foundations of Reinforcement Learning, Winter 2022\\ Midterm}}
+\end{center}
+
+\section*{Instructions}
+\noindent \textbf{Submissions}
+You need to submit a zip file, named {\tt midterm\_<name>.zip} 
+or {\tt midterm\_<name>.pdf} 
+where {\tt <name>} is your name.
+The zip file should include a report in PDF, typed up (we strongly encourage to use pdf\LaTeX) and the code that we asked for. Write your name on your solution.
+I provide a template that you are encouraged to use.
+You have to submit the zip file on the eclass website of the course.
+
+\noindent \textbf{Collaboration and sources}
+Work on your own. No consultation, etc.
+Students are expected to understand and explain all the steps of their proofs.
+
+\noindent \textbf{Scheduling}
+Start early: It takes time to solve the problems, as well as to write down the solutions. Most problems should have a short solution (and you can refer to results we have learned about to shorten your solution). Don't repeat calculations that we did in the class unnecessarily.
+
+\vspace{0.3cm}
+
+\noindent \textbf{Deadline:} February 25 at 11:55 pm
+
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\nS}{\mathrm{S}}
+\newcommand{\nA}{\mathrm{A}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ip}[1]{\langle #1 \rangle}
+
+\section*{Undiscounted infinite horizon problems}
+
+
+Let $M = (\cS,\cA,P,r)$ be a finite MDP as usual, but this time consider the infinite horizon undiscounted total reward criterion. In this setting, the value of policy $\pi$ (memoryless or not) is
+\begin{align*}
+v^\pi(s) = \E^{\pi}_s\left[ \sum_{t=0}^\infty r_{A_t}(S_t) \right]\,.
+\end{align*}
+To guarantee that this value exist we make the following assumption on the MDP $M$:
+
+\newcommand{\term}{s^{\star}}
+\begin{assumption}[All policies proper]\label{ass:app}
+Assume that the MDP $M$ has a state $\term$ such that the following hold:
+\begin{enumerate}
+\item For all actions $a\in \cA$, $P_a(\term,\term)=1$ (and thus, $P_a(\term,s')=0$ for any $s'\ne \term$ state of the MDP);
+\item For all actions $a\in \cA$, $r_a(\term)=0$;
+\item The rewards are all nonnegative;
+\item For any policy $\pi$ of the MDP (memoryless or not), 
+and for any $s\in \cS$,
+$\sum_{t\ge 0}\PP^{\pi}_s(S_t \ne \term)<\infty$.
+\end{enumerate}
+\end{assumption}
+{\color{red} In this section we assume that \cref{ass:app} holds even if this is not explicitly mentioned.}
+
+\newcommand{\eR}{\bar \R}
+\newcommand{\BB}{\mathbb{B}}
+\newcommand{\one}[1]{\mathbb{I}\{#1\}}
+\begin{question}
+\label{q:ex}
+Show that  the value of any policy $\pi$ can indeed be ``well-defined'' in the following sense:
+Let
+$(\Omega,\cF)$ be the measurable space that holds the random variables $(S_t,A_t)_{t\ge 0}$.
+\begin{enumerate}
+\item If we take $R=\sum_{t=0}^\infty r_{A_t}(S_t)$, this is well-defined as an \emph{extended real random variable} from the measurable space $(\Omega,\cF)$ to $(\eR,\BB(\eR))$ where $\eR = \R\cup\{-\infty,+\infty\}$ is the set of \emph{extended reals} 
+and $\BB(\eR)$ is the ``natural'' Borel $\sigma$-algebra over $\eR$ 
+defined using $\BB(\eR) =\sigma( \{[-\infty,x]\,:\, x\in \eR \})$ (i.e., the smallest $\sigma$-algebra generated by the set system in the argument of $\sigma$).
+\points{5}
+\item For any policy $\pi$ and state $s\in \cS$, 
+under $\PP_s^\pi$,
+the expectation of $R$ exists and is finite.
+\points{20}
+\end{enumerate}
+\hint For Part 1, recall the closure properties of the collection of extended real random variables (e.r.r.v.). 
+Start your argument with showing that $r_{A_t}(S_t)$ is a random variable and build up things from there.
+For Part 2, recall that the expected value of a nonnegative e.r.r.v is equal to the limit of expected values assigned to simple functions below it provided that the limit of these simple functions converges to the e.r.r.v. 
+For Part 2, see Prop 2.3.2 and for Part 1 see Prop 2.1.5 in (for example)
+this book
+\href{https://www.dropbox.com/s/3gi7k35j3jgcftp/2006_Book_MeasureTheoryAndProbabilityThe.pdf}{here}.\footnote{
+Krishna B. Athreya and Soumendra N. Lahiri. Measure Theory and Probability Theory. Springer, 2006.}
+\tpoints{}
+\end{question}
+
+
+The last part of the previous problem allows us to define the value of $\pi$ in state $s$ using the usual formula
+\begin{align*}
+v^\pi(s) = \E_s^\pi[ R ]
+\end{align*}
+and note that regardless of $\pi$ and $s$, these values are always finite.
+
+For a memoryless policy $\pi$ and $s,s'\ne \term$, 
+define $P_{\pi}(s,s') = \sum_{a\in \cA} \pi(a|s) P_a(s,s')$, i.e., the usual way.
+We can also view $P_{\pi}$, as usual, an $(\nS-1)\times (\nS-1)$ matrix by identifying $\cS$ with $\{1,\dots,\nS\}$, $\term=\nS$.
+
+\begin{question}[Transition matrices]
+Show that for any $s,s'\in \cS$, $s,s'\ne \term$, and $t\ge 1$, $(P_\pi^t)_{s,s'} = \PP_s^\pi(S_t=s')$.
+\tpoints{10}
+\end{question}
+
+
+\begin{question}
+Prove that for any memoryless policy $\pi$, defining $r_\pi(s) = \sum_a \pi(a|s)r_a(s)$, as usual,
+we have
+$v^\pi = \sum_{t\ge 0} P_\pi^t r_\pi$, where when viewed as vectors, $v^\pi$ and $r_\pi$ are restricted to $s\ne \term$ (i.e., they are $(\nS-1)$-dimensional).
+
+\hint You may want to reuse the result of the previous exercise.
+\tpoints{10}
+\end{question}
+
+
+\begin{question}[Policy evaluation fixed-point equation]
+\label{q:pefp}
+Show that for $s\ne \term$, $v^\pi$ satisfies
+\begin{align*}
+v^\pi(s) = r_\pi(s) + \sum_{s'\ne \term} P_\pi(s,s') v^\pi(s')\,.
+\end{align*}
+\tpoints{2}
+\end{question}
+
+
+Define now the $w(s)$ as the total expected reward incurred under $\pi$ when it is started from $s$ and \emph{in each time step the reward incurred is one} until $\term$ is reached (that is, $r_a(s)$ is replaced by $1$ for $s\ne \term$, while the zero rewards are kept at $\term$).
+By our previous result, $w$ is well-defined.
+Furthermore,
+\begin{align*}
+w(s)\ge 1\,, \qquad s\ne \term
+\end{align*}
+as for $s\ne \term$, in the zeroth period, a reward of one is incurred and in all subsequent periods the rewards incurred are nonnegative.
+
+Introduce now the weighted norm, $\norm{\cdot}_w$: For $x\in \R^{\nS-1}$,
+\begin{align*}
+\norm{x}_w = \max_{s\in [\nS-1]} \frac{|x_s|}{w(s)}\,.
+\end{align*}
+
+When the dependence on $\pi$ is important, we will use $w_\pi$.
+
+\begin{question}[Contractions]
+\label{q:contr}
+Show that $P_\pi$ is a contraction under $\norm{\cdot}_w$, that is,
+there exists $0\le \rho <1$ such that
+for any $x,y\in \R^{\nS-1}$,
+\begin{align*}
+\norm{P_\pi x- P_\pi y}_w \le \rho \norm{x-y}_w\,.
+\end{align*}
+\tpoints{15}
+\end{question}
+
+
+We can define occupancy measures as before: For $s\ne \term$, policy $\pi$ and initial state distribution $\mu$ defined over $\term\not\in \cS':= \{1,\dots,\nS-1\}$,
+\begin{align*}
+\nu_\mu^\pi(s, a) = \sum_{t=0}^\infty  \mathbb{P}_\mu^\pi (S_t = s, A_t = a).
+\end{align*}
+Clearly, this is well-defined under our standing assumption (by Question~\ref{q:ex}).
+Noting that rewards from $\term$ are all zero, we have
+\begin{align*}
+v^\pi(\mu) = \ip{\nu_\mu^\pi,r}\,.
+\end{align*}
+
+
+\begin{question}
+\label{q:occ}
+Show that for any policy $\pi$ and distribution $\mu \in \cM_1(\cS')$ there is a memoryless policy $\pi'$ such that $\nu_\mu^\pi = \nu_\mu^{\pi'}$.
+\tpoints{10}
+\end{question}
+
+
+
+Define $v^*(s) = \sup_{\pi} v^\pi(s)$ and define 
+$T: \R^{\nS-1} \to \R^{\nS-1}$ by
+$(T v)(s) = \max_a r_a(s) + \ip{P_a(s),v}$, $s\ne \term$.
+For a memoryless policy, we also let $T_\pi v = r_\pi + P_\pi v$ (using vector notation).
+Greediness is defined as usual: $\pi$ is greedy w.r.t. $v\in \R^{\nS-1}$, if $T_\pi v = T v$.
+
+\begin{question}[The Fundamental Theorem for Undiscounted Infinite-Horizon MDPs]
+Show that  the fundamental theorem still holds:
+\begin{enumerate}
+\item The optimal value function $v^*$ is well-defined (i.e., finite);
+\points{20}
+\item Any policy  that is greedy with respect to $v^*$  is optimal: $v^\pi = v^*$;
+\item It holds that $v^* = Tv^*$.
+\points{10}
+\end{enumerate}
+\tpoints{}
+\end{question}
+
+
+
+\begin{question}
+\label{q:nonneg}
+Imagine that \cref{ass:app} is changed such that all immediate rewards are nonpositive  (at $\term$ the rewards are still zero).
+What do you need to change in your answer to the previous questions? Just give a short summary of the changes.
+\tpoints{3}
+\end{question}
+
+
+
+
+\begin{question}
+Imagine that \cref{ass:app} is changed such that there is no sign restriction on the rewards, they can be positive, or negative. 
+Something will go wrong with the claims made in Question \ref{q:ex}. Explain what.
+\tpoints{3}
+\end{question}
+
+
+
+\section*{Approximate Policy Iteration}
+
+\begin{question}
+In the context of the analysis of approximate policy iteration analysis it was suggested that the following identity holds:
+\begin{align*}
+P_{\pi'} - P_{\pi^*} + \gamma P_{\pi'}(I-\gamma P_{\pi'})^{-1} (P_{\pi'}-P_{\pi} )
+=
+P_{\pi'} (I-\gamma P_{\pi'})^{-1} (I-\gamma P_{\pi}) - P_{\pi^*}\,.
+\end{align*}
+Show that this identity holds, actually, regardless the choice of the memoryless policies 
+$\pi$, $\pi'$ and $\pi^*$.
+\tpoints{10}
+\end{question}
+
+
+
+\begin{question}
+Prove the following.
+Assume that the rewards lie in the $[0,1]$ interval.
+Let $(\pi_k)_{k\ge 0}$ be a sequence of memoryless policies and $(q_k)_{k\ge 0}$ be a sequence of functions over the set of state-action pairs such that for $k\ge 1$,
+$\pi_k$ is greedy with respect to $q_{k-1}$. Further,
+let $\varepsilon_k = \max_{0\le i \le k} \| q^{\pi_i} - q_i\|_\infty$.
+Then, for any $k\ge 1$,
+\begin{align*}
+\norm{ q^* - q^{\pi_k} }_\infty 
+& \le 
+\frac{\gamma^k}{1-\gamma}  + 
+\frac{2\gamma}{(1-\gamma)^2} \varepsilon_{k-1}\,,
+\end{align*}
+and policy $\pi_{k+1}$ is $\delta$-optimal where
+\begin{align*}
+\delta 
+\le 
+\frac{2}{1-\gamma} \left( 
+\frac{\gamma^k}{1-\gamma}  + \frac{2}{(1-\gamma)^2} \varepsilon_k  \right)\,.
+\end{align*}
+How does this result compare to the Approximate Policy Iteration Corollary from Lecture 8 notes? 
+
+\noindent \textbf{Hint:} You can use the following geometric progress lemma for action-value functions without proof. 
+\begin{align*}
+\norm{ q^* - q^{\pi_k} }_\infty 
+\le 
+\gamma \norm{ q^* - q^{\pi_{k-1}} }_\infty  + \frac{2\gamma}{1-\gamma} \norm{ q^{\pi_{k-1}}-q_{k-1}}_\infty\,.
+\end{align*}
+
+
+\tpoints{15}
+\end{question}
+
+
+
+
+
+\bigskip
+\bigskip
+
+\noindent
+\textbf{
+\noindent
+Total for all questions: \arabic{DocPoints}}.
+Of this, $23$ are bonus marks (i.e., $110$ marks worth $100\%$ on this problem set).
+
+\end{document}
+
+
+
+
+

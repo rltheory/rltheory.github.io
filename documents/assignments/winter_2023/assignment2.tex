@@ -1,0 +1,228 @@
+\documentclass{article}
+\newcommand{\hwnumber}{2}
+
+\newcommand{\norm}[1]{\| #1 \|}
+\newcommand{\abs}[1]{| #1 |}
+
+\usepackage{fullpage,amsthm,amsmath,amssymb}
+\usepackage{algorithm,algorithmic}
+\usepackage{mathtools}
+\usepackage{bbm,bm}
+\usepackage{enumerate}
+\usepackage{xspace}
+\usepackage[textsize=tiny,
+]{todonotes}
+\newcommand{\todot}[1]{\todo[color=blue!20!white]{T: #1}}
+\newcommand{\todoc}[1]{\todo[color=orange!20!white]{Cs: #1}}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue,linkcolor=black]{hyperref}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\phi}{\varphi}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\one}[1]{\mathbb{I}_{\{#1\}}}
+\newcommand{\oneb}[1]{\mathbb{I}_{#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\cZ}{\mathcal{Z}}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator*{\Exp}{\mathbf{E}}
+\DeclareMathOperator*{\1}{\mathbbm{1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\bbP}{\mathbb P}
+\newcommand{\V}{\mathbb V}
+\renewcommand{\P}[1]{\bbP\left( #1 \right)}
+\newcommand{\Prob}[1]{\mathbb{P}( #1 )}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\b}[1]{\mathbf{#1}}
+\newcommand{\EE}[1]{\E[#1]}
+\newcommand{\bfone}{\1}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\0}{\mathbf{0}}
+\usepackage[capitalize]{cleveref}
+\usepackage{xifthen}
+
+\newcounter{DocPoints} 
+\newcounter{QuestionPoints} 
+\newcommand{\points}[1]{	\par\mbox{}\par\noindent\hfill {\bf #1 points}	\addtocounter{DocPoints}{#1}
+	\addtocounter{QuestionPoints}{#1}
+}
+\newcommand{\tpoints}[1]{        	\ifthenelse{\isempty{#1}}	{	}	{		\addtocounter{DocPoints}{#1}
+		\addtocounter{QuestionPoints}{#1}
+	}													 	\par\mbox{}\par\noindent\hfill {Total: \bf \arabic{QuestionPoints}\xspace points}\par\mbox{}\par\hrule\hrule
+	\setcounter{QuestionPoints}{0}
+}
+\newcommand{\tpoint}[1]{
+	\tpoints{#1}
+}
+
+\theoremstyle{definition}
+\newtheorem{question}{Question}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem*{remark*}{Remark}
+\newtheorem{solution}{Solution}
+\newtheorem*{solution*}{Solution}
+
+\newtheorem{lemma}{Lemma}
+
+\newcommand{\hint}{\noindent \textbf{Hint}:\xspace}
+
+\usepackage{hyperref}
+
+\newcommand{\epssub}{\delta}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\sA}{\mathcal{A}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{CMPUT 605: Theoretical Foundations of Reinforcement Learning, Winter 2023\\ Homework \#\hwnumber}}
+\end{center}
+
+\section*{Instructions}
+\textbf{Submissions}
+You need to submit a single PDF file, named {\tt p0\hwnumber\_<name>.pdf} where {\tt <name>} is your name.
+The PDF file should include your typed up solutions (we strongly encourage to use pdf\LaTeX). 
+Write your name in the title of your PDF file.
+We provide a \LaTeX template that you are encouraged to use.
+To submit your PDF file you should send the PDF file via private message to Vlad Tkachuk on Slack before the deadline.
+
+\textbf{Collaboration and sources}
+Work on your own. You can consult the problems with your classmates, use books
+or web, papers, etc.
+Also, the write-up must be your own and you must acknowledge all the
+sources (names of people you worked with, books, webpages etc., including class notes.) 
+Failure to do so will be considered cheating.  
+Identical or similar write-ups will be considered cheating as well.
+Students are expected to understand and explain all the steps of their proofs.
+
+\textbf{Scheduling}
+Start early: It takes time to solve the problems, as well as to write down the solutions. Most problems should have a short solution (and you can refer to results we have learned about to shorten your solution). Don't repeat calculations that we did in the class unnecessarily.
+
+\vspace{0.3cm}
+
+\textbf{Deadline:} February 12 at 11:55 pm
+
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\nS}{\mathrm{S}}
+\newcommand{\nA}{\mathrm{A}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ip}[1]{\langle #1 \rangle}
+
+\section*{Problems}
+
+\subsection*{Union bounds}
+\begin{question}
+Let $A_1,\dots,A_n$ be events of a probability space $(\Omega,\cF,\bbP)$. Note that finite (and actually discrete) sets are always equipped with the discrete $\sigma$-algebra (power set) unless otherwise specified.
+Show that the following hold:
+\begin{enumerate}
+\item Show that for any random variable $I$ taking values in $[n]$, $A_I$, which is naturally defined as $$A_I = \{ \omega\in \Omega\,:\, \omega \in A_{I(\omega)} \},$$ is an event.
+\points{5}
+\item Show that there exist a random variable $I$ taking values in $[n]$, such that $\Prob{A_I} = \Prob{\cup_{i=1}^n A_i}$.
+\points{10}
+\item Show that the first two claims hold even if $I$ takes values in $\{1,2,\dots\}$ and $(A_i)_{i=1,2,\dots}$ is a countably infinite sequence of events. (It suffices to explain which parts of the solution to the first two questions need to be changed.)
+\points{5}
+\end{enumerate}
+\tpoints{}
+\end{question}
+
+
+\subsection*{Online planning revisited}
+In the next problem we consider the variant of online planner that uses a fresh sample in each call of function $q$.
+In particular, consider the following algorithm:
+
+\begin{enumerate}
+\item {\tt define q(k,s):}
+\item {\tt if k = 0 return [0 for a in A] \# base case}
+\item {\tt return [ r(s,a) + gamma/m * sum( [max(q(k-1,s')) for s' in C(k,s,a)] ) for a in A ]}
+\item {\tt end}
+\end{enumerate}
+
+Here, the lists {\tt C(k,s,a)}, which in what follows will be denoted by $C_k(s,a)$ are as usual: They are created independently of each other for each $(s,a)$ and $k$ and they have $m$ mutually independent elements, sampled from $P_a(s)$.
+In particular, $C_k(s,a) = [S_1'(k,s,a), \dots, S_m'(k,s,a)]$ where $(S_i'(k,s,a))\stackrel{\textrm{iid}}{\sim} P_a(s)$.
+The planner is used the same way as before: when asked for an action at state $s_0$, it returns $\arg\max_{a\in \cA} q(k,s_0)$ with an appropriate choice of $k$ (and $m$).
+
+
+Let $\hat T_k: \R^{\cS \times \cA} \to \R^{\cS \times \cA}$ be defined by 
+\begin{align*}
+\hat T_k q (s,a) = r_a(s) + \frac{\gamma}{m} \sum_{s'\in C_k(s,a)} \max_{a'} q(s',a')\,.
+\end{align*}
+
+\begin{question}
+Assume that the rewards belong to the $[0,1]$ interval.
+Show that the following hold:
+\begin{enumerate}
+\item For $k\ge 0$, let $Q_k(s,\cdot)$ be the values returned by the call {\tt q(k,s)} with a particular value of $s$ and $k$. Show that $Q_k(s,\cdot) = \hat T_k \dots \hat T_1 \0 (s,\cdot)$.
+\points{5}
+\item Fix $H>0$. Define a sequence of sets $\cS_0,\dots,\cS_H$ with $|\cS_h| = O( (mA)^h)$ and $\cS_0 = \{s_0\}$ such that with $\delta_h = \norm{Q_h - q^*}_{\cS_{H-h}}$, the following hold for any $0\le h \le H$:
+\begin{enumerate}[(a)]
+\item If also $h>0$, $\delta_h \le \gamma \delta_{h-1} + \norm{ \hat T_h q^* - q^* }_{\cS_{H-h}}$;
+\points{5}
+\item If also $h<H$, $\cS_{H-h}$ is a function of $C_H$, \dots, $C_{h+1}$ only (and is not a function of $C_{h},\dots,C_1$).
+\points{5}
+\end{enumerate}
+\item Show that with probability $1-\zeta$, $\norm{ \hat T_h q^* - q^* }_{\cS_{H-h}}\le \frac{1}{1-\gamma} \sqrt{ \frac{\log(2|\cS_{H-h}||A|/\zeta)}{2m} }$\,.
+\points{10}
+\item Let $\pi$ be the policy induced by the modified planner. Give a bound on the suboptimality of $\pi$ (make it as tight as you can using the usual tools).
+\points{10}
+\item Compare the bound to the one we obtained for the case when the same sets are used in the algorithm throughout.
+\points{5}
+\item Bound the computational complexity of the algorithm; argue why one would call this the ``sparse lookahead tree approach''.
+\points{5}
+\end{enumerate}
+\tpoints{}
+\end{question}
+
+
+
+\section*{Tightness of performance bounds of greedy policies}
+
+Error bounds for greedy policies are at the heart of many of the upper bounds we obtained.
+Here you will be asked to show that these bounds are unimprovable.
+For example, in
+\href{http://rltheory.github.io/lecture-notes/planning-in-mdps/lec6/}{Lecture 6},
+the following is stated in
+Part II of the ``Policy error bound - I.'' lemma:
+\begin{lemma}
+Let $\pi$ be a memoryless policy and choose a function $q:\mathcal{S}\times\mathcal{A} \to \mathbb{R}$ and $\epsilon\ge 0$. Then,
+if $\pi$ is greedy with respect to $q$ then
+\begin{align*}
+v^\pi \ge v^* - \frac{2\|q-q^*\|_\infty}{1-\gamma} \boldsymbol{1}\,.
+\end{align*}
+\end{lemma}
+\begin{question}
+Show that for any $\gamma\in [0,1)$ and $\varepsilon>0$ there is a finite
+discounted MDP $M=(\cS,\cA,P,r,\gamma)$ and $q:\cS \times \cA \to \R$ such that the following hold:
+\begin{enumerate}
+\item $\norm{q-q^*}_\infty  =\varepsilon$;
+\item There is policy $\pi$ that is greedy with respect to $q$ such that $\|v^\pi-v^*\|_\infty = \frac{2\varepsilon}{1-\gamma}$.
+\end{enumerate}
+\tpoints{10}
+\end{question}
+
+
+
+\bigskip
+\bigskip
+
+\noindent
+\textbf{
+Total for all questions: \arabic{DocPoints}}.
+Of this, 10 are bonus marks. 
+Your assignment will be marked out of 65.
+
+\end{document}
+
+
+
+
+

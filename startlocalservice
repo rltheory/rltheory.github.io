@@ -1,0 +1,5 @@
+# bundle exec jekyll serve
+bundle exec jekyll serve --config=_config.yml,_config_local.yml
+# after this, just point your browser to https://127.0.0.1:4000 (as shown in the output of the command)
+# for this to work, one must install ruby, Jekyll and bundler locally, see https://jekyllrb.com/docs/installation/macos/
+# port did not work, must use homebrew
